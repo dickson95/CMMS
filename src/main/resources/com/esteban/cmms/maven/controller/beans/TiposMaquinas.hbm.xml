@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 8/06/2016 05:45:53 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.esteban.cmms.maven.controller.beans.TiposMaquinas" table="TiposMaquinas" catalog="CMMS" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="Id" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="Nombre" length="50" not-null="true" />
+        </property>
+        <property name="estado" type="string">
+            <column name="Estado" length="10" not-null="true" />
+        </property>
+        <property name="fchUltAction" type="timestamp">
+            <column name="FchUltAction" length="19" not-null="true" />
+        </property>
+        <property name="userAction" type="string">
+            <column name="UserAction" length="50" not-null="true" />
+        </property>
+        <set name="maquinases" table="Maquinas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Tipo_maquina_Id" not-null="true" />
+            </key>
+            <one-to-many class="com.esteban.cmms.maven.controller.beans.Maquinas" />
+        </set>
+    </class>
+</hibernate-mapping>

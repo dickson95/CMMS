@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 8/06/2016 05:45:53 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.esteban.cmms.maven.controller.beans.Paises" table="Paises" catalog="CMMS" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="Id" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="Nombre" length="50" not-null="true" />
+        </property>
+        <set name="departamentoses" table="Departamentos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Pais_Id" not-null="true" />
+            </key>
+            <one-to-many class="com.esteban.cmms.maven.controller.beans.Departamentos" />
+        </set>
+    </class>
+</hibernate-mapping>

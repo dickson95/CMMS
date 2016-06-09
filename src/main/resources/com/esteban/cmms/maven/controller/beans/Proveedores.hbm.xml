@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 8/06/2016 05:45:53 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.esteban.cmms.maven.controller.beans.Proveedores" table="Proveedores" catalog="CMMS" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="Id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="ciudades" class="com.esteban.cmms.maven.controller.beans.Ciudades" fetch="select">
+            <column name="Ciudad_Id" />
+        </many-to-one>
+        <property name="nombreCompania" type="string">
+            <column name="Nombre_compania" length="50" not-null="true" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="Telefono" length="12" not-null="true" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="Direccion" length="100" />
+        </property>
+        <property name="codigoPostal" type="string">
+            <column name="Codigo_postal" length="100" />
+        </property>
+        <property name="email" type="string">
+            <column name="Email" length="100" not-null="true" />
+        </property>
+        <property name="paginaWeb" type="string">
+            <column name="Pagina_web" length="100" />
+        </property>
+        <property name="saldoAdeudado" type="long">
+            <column name="Saldo_adeudado" precision="10" scale="0" not-null="true" />
+        </property>
+        <property name="descripcionProducto" type="string">
+            <column name="Descripcion_producto" length="65535" not-null="true" />
+        </property>
+        <property name="estado" type="string">
+            <column name="Estado" length="10" not-null="true" />
+        </property>
+        <property name="fchUltAction" type="timestamp">
+            <column name="FchUltAction" length="19" not-null="true" />
+        </property>
+        <property name="userAction" type="string">
+            <column name="UserAction" length="50" not-null="true" />
+        </property>
+        <set name="maquinases" table="Maquinas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Proveedor_Id" />
+            </key>
+            <one-to-many class="com.esteban.cmms.maven.controller.beans.Maquinas" />
+        </set>
+        <set name="vendedoreses" table="Vendedores" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Proveedor_Id" />
+            </key>
+            <one-to-many class="com.esteban.cmms.maven.controller.beans.Vendedores" />
+        </set>
+    </class>
+</hibernate-mapping>
