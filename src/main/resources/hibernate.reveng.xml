@@ -8,10 +8,10 @@
   <table-filter match-name="Proveedores"/>
   <table-filter match-name="Localizaciones"/>
   <table-filter match-name="Maquinas"/>
-  <table-filter match-name="Clientes"/>
   <table-filter match-name="Departamentos"/>
   <table-filter match-name="Imagenes"/>
   <table-filter match-name="Secciones"/>
   <table-filter match-name="TiposMaquinas"/>
   <table-filter match-name="Paises"/>
+  <table-filter match-name="Usuarios"/>
 </hibernate-reverse-engineering>

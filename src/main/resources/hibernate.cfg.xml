@@ -20,12 +20,12 @@
     <mapping resource="com/esteban/cmms/maven/controller/beans/Vendedores.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Maquinas.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Localizaciones.hbm.xml"/>
-    <mapping resource="com/esteban/cmms/maven/controller/beans/Clientes.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Proveedores.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Paises.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Departamentos.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Secciones.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Documentos.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Imagenes.hbm.xml"/>
+    <mapping resource="com/esteban/cmms/maven/controller/beans/Usuarios.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
