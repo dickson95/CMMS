@@ -19,8 +19,7 @@ public class Usuarios {
     public Usuarios() {
     }
 
-    public Usuarios(Integer id, String usuario, String contrasena, String rol) {
-        this.id = id;
+    public Usuarios(String usuario, String contrasena, String rol) {
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.rol = rol;

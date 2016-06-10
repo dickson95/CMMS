@@ -104,8 +104,8 @@ public class Usuarios_Model {
         return obj;
     }
 
-    public Usuarios getUsuarioByUC(String usuario, String contrasena) {
-        Usuarios obj = null;
+    public Object getUsuarioByUC(String usuario, String contrasena) {
+        Object obj = null;
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -115,7 +115,7 @@ public class Usuarios_Model {
             Query query = session.createQuery(queryString);
             query.setString("usuario", usuario);
             query.setString("contrasena", contrasena);
-            obj = (Usuarios) query.uniqueResult();
+            obj =  query.uniqueResult();
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {

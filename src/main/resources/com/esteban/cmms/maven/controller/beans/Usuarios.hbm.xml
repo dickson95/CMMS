@@ -12,12 +12,12 @@
             <generator class="identity" />
         </id>
         <property name="usuario" type="string">
-            <column name="Usuario" length="15" not-null="false" />
+            <column name="Usuario" length="50" not-null="true" />
         </property>
         <property name="contrasena" type="string">
-            <column name="Contrasena" length="16" not-null="false" />
+            <column name="Contrasena" length="16" not-null="true" />
         </property>
-        <property name="rol" type="timestamp">
+        <property name="rol" type="string">
             <column name="Rol" length="20" not-null="false" />
         </property>
     </class>
