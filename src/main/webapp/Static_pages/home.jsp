@@ -8,23 +8,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    System.out.println("Voy a tomar el usuario");
     Object s = session.getAttribute("usuario");
-    System.out.println("ya tome el usuario"+s);
     if (s != null) {
         Usuarios sesion = (Usuarios) s;
+        System.out.println("Home");
 %>
 <!DOCTYPE html>
 <html>
     <head>
-        <title></title>
-        <jsp:include page="../layouts/aplication.jsp"></jsp:include>
+        <jsp:include page="../layouts/aplication.jsp">
+            <jsp:param name="title" value="CMMS"></jsp:param>
+        </jsp:include>
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp">
-                <jsp:param name="rol" value="<%=sesion.getRol() %>"></jsp:param>
-            </jsp:include>
+            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
     </header>
     <main>
         <h1 class="text-center">BIENVENIDO A LA GESTION DE <BR> MANTENIMIENTO COMPUTARIZADO</h1>
@@ -52,6 +50,7 @@
     </body>
 </html>
 <%
+    //session.invalidate();
     } else {
         response.sendRedirect("../Usuarios/login.jsp");
     }

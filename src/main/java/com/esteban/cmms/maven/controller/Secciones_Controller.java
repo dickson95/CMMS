@@ -7,6 +7,7 @@ package com.esteban.cmms.maven.controller;
 
 import com.esteban.cmms.maven.controller.beans.Localizaciones;
 import com.esteban.cmms.maven.controller.beans.Secciones;
+import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.model.Localizaciones_Model;
 import com.esteban.cmms.maven.model.Secciones_Model;
 import java.io.IOException;
@@ -78,11 +79,12 @@ public class Secciones_Controller extends HttpServlet {
             Secciones_Model model = new Secciones_Model();
             Localizaciones l = new Localizaciones(Integer.parseInt(request.getParameter("localizacion")));
             //Datos para el pojo
+            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
             Secciones pojo = new Secciones(l,
             Integer.parseInt(request.getParameter("seccionId")),
             request.getParameter("nombreSeccion"),
             request.getParameter("Estado"),
-            "esteban",
+            user.getNombre(),
             request.getParameter("codigo"));
             try {
                 model.updateSeccion(pojo);
@@ -98,11 +100,12 @@ public class Secciones_Controller extends HttpServlet {
             HttpSession sesion = request.getSession();
             sesion.removeAttribute("secciones");
             sesion.removeAttribute("localizaciones");
+            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
             int id = Integer.parseInt(request.getParameter("localizacion"));
             Localizaciones_Model lmodel = new Localizaciones_Model();
             Localizaciones obj = lmodel.getLocalizacionById(id);
             Secciones pojo = new Secciones(obj,request.getParameter("nombreSeccion"),
-                    "Activo","esteban",request.getParameter("codigo"));
+                    "Activo",user.getNombre(),request.getParameter("codigo"));
             Secciones_Model model = new Secciones_Model();           
             
             try {

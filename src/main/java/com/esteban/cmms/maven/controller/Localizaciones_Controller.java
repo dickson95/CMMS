@@ -6,6 +6,7 @@
 package com.esteban.cmms.maven.controller;
 
 import com.esteban.cmms.maven.controller.beans.Localizaciones;
+import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.model.Localizaciones_Model;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,11 +72,12 @@ public class Localizaciones_Controller extends HttpServlet {
             Localizaciones_Model model = new Localizaciones_Model();
             String Id = request.getParameter("localizacionId");
             //Datos para el pojo
+            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
             pojo.setId(Integer.parseInt(Id));
             pojo.setNombre(request.getParameter("nombreLocalizacion"));
             pojo.setCodigo(request.getParameter("codigo")); 
             pojo.setEstado(request.getParameter("Estado"));
-            pojo.setUserAction("esteban");
+            pojo.setUserAction(user.getNombre());
             try {
                 model.updateLocalizacion(pojo);
             } catch (Exception ex) {
@@ -86,6 +88,7 @@ public class Localizaciones_Controller extends HttpServlet {
         } else if (btn.equalsIgnoreCase("guardar")) {
             System.out.println("Este es guardar");
             HttpSession sesion = request.getSession();
+            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
             sesion.removeAttribute("localizaciones");
             String name = request.getParameter("nombreLocalizacion");
             
@@ -94,7 +97,7 @@ public class Localizaciones_Controller extends HttpServlet {
             pojo.setNombre(name);
             pojo.setCodigo(request.getParameter("codigo"));
             pojo.setEstado("Activo");
-            pojo.setUserAction("esteban");
+            pojo.setUserAction(user.getNombre());
             
             try {
                 model.addLocalizacion(pojo);

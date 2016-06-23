@@ -26,6 +26,7 @@
     <mapping resource="com/esteban/cmms/maven/controller/beans/Secciones.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Documentos.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Imagenes.hbm.xml"/>
+    <mapping resource="com/esteban/cmms/maven/controller/beans/Roles.hbm.xml"/>
     <mapping resource="com/esteban/cmms/maven/controller/beans/Usuarios.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

@@ -4,12 +4,18 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Localizaciones"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%List<Localizaciones> array = (ArrayList<Localizaciones>) session.getAttribute("localizaciones");
-    System.out.println("Este es array: " + array);
+<%
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        List<Localizaciones> array = (ArrayList<Localizaciones>) session.getAttribute("localizaciones");
+        System.out.println("Este es array: " + array);
 %>
 <%if (array != null) {%>
 <!DOCTYPE html>
@@ -20,7 +26,9 @@
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
+            <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=sesion.getRoles().getRol()%>"></jsp:param>
+            </jsp:include>
             </header>
             <main>
                 <h3>Lista de Localizaciones no Activos</h3>
@@ -65,5 +73,9 @@
         </body>
     </html>
 <%} else {
-        response.sendRedirect("../LocalizacionesC?btn=Localizaciones&valor=inactivo");
-    }%>
+            response.sendRedirect("../LocalizacionesC?btn=Localizaciones&valor=inactivo");
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
+    }
+%>

@@ -4,14 +4,19 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Vendedores"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%List<Vendedores> array = (ArrayList<Vendedores>) session.getAttribute("vendedores");
-    System.out.println("Este es array: " + array);
-%>
-<%if (array != null) {%>
+<%
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        List<Vendedores> array = (ArrayList<Vendedores>) session.getAttribute("vendedores");
+        System.out.println("Este es array: " + array);
+        if (array != null) {%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,9 +25,11 @@
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
-            </header>
-            <main>
+            <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=sesion.getRoles().getRol()%>"></jsp:param>
+            </jsp:include>
+        </header>
+        <main>
             <h3>Lista de Vendedores no Activos</h3>
             <div class="table-responsive">
                 <table class="table  table-hover">
@@ -39,39 +46,43 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <%for (Vendedores a : array) {%>
-                    <tr>
-                        <td  class="text-left"><%= a.getNombre()%></td>
-                        <td  class="text-center"><%= a.getEmail()%></td>
-                        <td  class="text-center"><%= a.getProveedores().getNombreCompania()%></td>
-                        <td  class="text-center"><%= a.getCodigo()%></td>
-                        <td  class="text-center"><%= a.getEstado()%></td>
-                        <td  class="text-center"><%= a.getFchUltAction()%></td>
-                        <td  class="text-center"><%= a.getUserAction()%></td>
-                        <td>
-                            <input class="btn btn-danger" type="button" name="btn" 
-                                   onclick="confirmar(
+                        <%for (Vendedores a : array) {%>
+                        <tr>
+                            <td  class="text-left"><%= a.getNombre()%></td>
+                            <td  class="text-center"><%= a.getEmail()%></td>
+                            <td  class="text-center"><%= a.getProveedores().getNombreCompania()%></td>
+                            <td  class="text-center"><%= a.getCodigo()%></td>
+                            <td  class="text-center"><%= a.getEstado()%></td>
+                            <td  class="text-center"><%= a.getFchUltAction()%></td>
+                            <td  class="text-center"><%= a.getUserAction()%></td>
+                            <td>
+                                <input class="btn btn-danger" type="button" name="btn" 
+                                       onclick="confirmar(
                                                    'VendedoresC', '<%=a.getId()%>',
                                                    '<%= a.getNombre()%>', '<%= a.getEmail()%>',
                                                    '<%= a.getProveedores().getId()%>',
                                                    '<%= a.getCodigo()%>', 'Activo')"
-                                   value="Activar"/>
-                        </td>
-                    </tr>
-                    <%}
-                        session.removeAttribute("vendedores");
-                    %>
-                </tbody>
-            </table>
-        </div>
-        <div class="text-center">
-            <input type="text" class="btn btn-default" onclick="location.href = 'index.jsp'"
-                   name="btn" value="Atras"/>
-        </div>
-        <jsp:include page="../layouts/footer.jsp"></jsp:include>
-        </main>
-    </body>
-</html>
+                                       value="Activar"/>
+                            </td>
+                        </tr>
+                        <%}
+                            session.removeAttribute("vendedores");
+                        %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <input type="text" class="btn btn-default" onclick="location.href = 'index.jsp'"
+                       name="btn" value="Atras"/>
+            </div>
+            <jsp:include page="../layouts/footer.jsp"></jsp:include>
+            </main>
+        </body>
+    </html>
 <%} else {
-        response.sendRedirect("../VendedoresC?btn=Vendedores&valor=inactivo");
-    }%>
+            response.sendRedirect("../VendedoresC?btn=Vendedores&valor=inactivo");
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
+    }
+%>

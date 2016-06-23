@@ -7,6 +7,7 @@ package com.esteban.cmms.maven.controller;
 
 import com.esteban.cmms.maven.controller.beans.Ciudades;
 import com.esteban.cmms.maven.controller.beans.Proveedores;
+import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.model.Ciudades_Model;
 import com.esteban.cmms.maven.model.Proveedores_Model;
 import com.google.gson.Gson;
@@ -63,7 +64,7 @@ public class Proveedores_Controller extends HttpServlet {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                response.sendRedirect("Proveedores/index.jsp");
+                response.sendRedirect("Proveedores");
             } else if (valor.equalsIgnoreCase("inactivo")) {
                 try {
                     result = model.listNoActive();
@@ -81,6 +82,7 @@ public class Proveedores_Controller extends HttpServlet {
             Ciudades c = new Ciudades(Integer.parseInt(
                     request.getParameter("ciudad")));
             System.out.println("Este es el Id: " + Id);
+            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
             Proveedores pojo = new Proveedores(
                     Integer.parseInt(Id),
                     request.getParameter("compania"),
@@ -93,7 +95,7 @@ public class Proveedores_Controller extends HttpServlet {
                     request.getParameter("descripcion"),
                     c,
                     request.getParameter("estado"),
-                    "esteban"
+                    user.getNombre()
             );
             
             try {
@@ -103,12 +105,13 @@ public class Proveedores_Controller extends HttpServlet {
             }
             sesion.removeAttribute("proveedores");
             sesion.removeAttribute("ciudades");
-            response.sendRedirect("Proveedores/index.jsp");
+            response.sendRedirect("Proveedores");
             
         } else if (btn.equalsIgnoreCase("guardar")) {
             HttpSession sesion = request.getSession();
             sesion.removeAttribute("proveedores");
             sesion.removeAttribute("ciudades");
+            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
             Ciudades c = new Ciudades(Integer.parseInt(
                     request.getParameter("ciudad")));
             Proveedores pojo = new Proveedores(
@@ -122,7 +125,7 @@ public class Proveedores_Controller extends HttpServlet {
                     Long.parseLong(request.getParameter("deuda")),
                     request.getParameter("descripcion"),
                     "Activo",
-                    "esteban"
+                    user.getNombre()
             );
             Proveedores_Model model = new Proveedores_Model();
             
@@ -131,7 +134,7 @@ public class Proveedores_Controller extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(Proveedores_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("Proveedores/index.jsp");
+            response.sendRedirect("Proveedores");
         } else if (btn.equalsIgnoreCase("ciudad")) {
             List<Ciudades> c = new Ciudades_Model().getAllCiudades(request.getParameter("search"));
             List<String> ciudades = new ArrayList<>();

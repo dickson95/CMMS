@@ -4,18 +4,22 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Ciudades"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Proveedores"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    System.out.println("Estoy en jsp");
-    List<Proveedores> array = (ArrayList<Proveedores>) session.getAttribute("proveedores");
-    System.out.println("Ya tomé el array");
-%>
-<%if (array != null) {
-        System.out.println("Este es array: " + array);
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        String rol = sesion.getRoles().getRol();
+        List<Proveedores> array = (ArrayList<Proveedores>) session.getAttribute("proveedores");
+
+        if (array != null) {
+            System.out.println("Proveedores");
 %>
 <!DOCTYPE html>
 <html>
@@ -32,30 +36,53 @@
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
-            </header>
-            <main>
-                <h3>Lista de Proveedodes</h3>
-                <div class="table-responsive">
-                    <table class="table ">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Compañia</th>
-                                <th class="text-center">Teléfono</th>
-                                <th class="text-center">Dirección</th>
-                                <th class="text-center">Código postal</th>
-                                <th class="text-center">Email</th>
-                                <th class="text-center">Pagina web</th>
-                                <th class="text-center">Ciudad</th>
-                                <th class="text-center">Saldo Adeudado</th>
-                                <th class="text-center">Descripción del producto</th>
-                                <th class="text-center">Estado del registro</th>
-                                <th class="text-center">Ultima modificación</th>
-                                <th class="text-center">Modificado por</th>
-                                <th colspan="2"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=rol%>"></jsp:param>
+            </jsp:include>
+        </header>
+        <main>
+            <% if (!rol.equalsIgnoreCase("produccion")
+                        && !rol.equalsIgnoreCase("tmantenimiento")) { %>
+            <div class="row">
+                <h3 class="col-md-6">Lista de Proveedodes</h3>
+                <!--Botones generales-->
+                <div class="text-right col-md-6">
+                    <% if (!rol.equalsIgnoreCase("matenimiento")) {%>
+                    <button type="button" class="btn btn-default" aria-label="Left Align" 
+                            data-toggle="modal" data-target="#new">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <% } %>
+                    <button type="button" class="btn btn-default" aria-label="Left Align" 
+                            onclick="location.href = '../index.jsp'">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                    </button>
+                    <% if (!rol.equalsIgnoreCase("matenimiento")) { %>
+                    <input type="text" class="btn btn-default" onclick="location.href = '../ProveedoresC?valor=inactivo&btn=Proveedores'"
+                           name="btn" value="Ver inactivos"/>
+                    <% } %>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table ">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Compañia</th>
+                            <th class="text-center">Teléfono</th>
+                            <th class="text-center">Dirección</th>
+                            <th class="text-center">Código postal</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Pagina web</th>
+                            <th class="text-center">Ciudad</th>
+                            <th class="text-center">Saldo Adeudado</th>
+                            <th class="text-center">Descripción del producto</th>
+                            <th class="text-center">Estado del registro</th>
+                            <th class="text-center">Ultima modificación</th>
+                            <th class="text-center">Modificado por</th>
+                            <th colspan="2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <%for (Proveedores a : array) {%>
                         <tr>
                             <td  class="text-left"><%= a.getNombreCompania()%></td>
@@ -64,7 +91,7 @@
                             <td  class="text-center"><%= a.getCodigoPostal()%></td>
                             <td  class="text-center"><%= a.getEmail()%></td>
                             <td  class="text-center"><%= a.getPaginaWeb()%></td>
-                                <td  class="text-center"><%= a.getCiudades().getNombre() + ", "
+                            <td  class="text-center"><%= a.getCiudades().getNombre() + ", "
                                     + a.getCiudades().getDepartamentos().getNombre() + ", "
                                     + a.getCiudades().getDepartamentos().getPaises().getNombre()%></td>
                             <td  class="text-center"><%= a.getSaldoAdeudado()%></td>
@@ -72,6 +99,7 @@
                             <td  class="text-center"><%= a.getEstado()%></td>
                             <td  class="text-center"><%= a.getFchUltAction()%></td>
                             <td  class="text-center"><%= a.getUserAction()%></td>
+                            <% if (!rol.equalsIgnoreCase("matenimiento")) {%>
                             <td  class="text-center">
                                 <input class="open-Modal btn btn-primary" type="button" 
                                        data-toggle="modal" data-target="#edit"
@@ -86,8 +114,8 @@
                                        data-p_web="<%= a.getPaginaWeb()%>"
                                        data-ciuid="<%= a.getCiudades().getId()%>"
                                        data-ciudad="<%= a.getCiudades().getNombre() + ", "
-                                            + a.getCiudades().getDepartamentos().getNombre() + ", "
-                                            + a.getCiudades().getDepartamentos().getPaises().getNombre()%>"
+                                               + a.getCiudades().getDepartamentos().getNombre() + ", "
+                                               + a.getCiudades().getDepartamentos().getPaises().getNombre()%>"
                                        data-deuda="<%= a.getSaldoAdeudado()%>" 
                                        data-descripcion="<%= a.getDescripcionProducto()%>"/>
                             </td>
@@ -101,8 +129,10 @@
                                                        '<%= a.getPaginaWeb()%>', '<%= a.getCiudades().getId()%>',
                                                        '<%= a.getSaldoAdeudado()%>', '<%= a.getDescripcionProducto()%>')" value="Desactivar"/>
                             </td>
+                            <% } %>
                         </tr>
-                        <%}
+                        <%
+                            }
                             session.removeAttribute("proveedores");
                         %>
                     </tbody>
@@ -185,23 +215,22 @@
                     </div>
                 </div>
             </div>
-            <!--Botones generales-->
-            <div class="text-center">
-                <input type="text" class="btn btn-default" data-toggle="modal" data-target="#new"
-                       name="btn" value="Nuevo"/>&nbsp;|
-                <input type="text" class="btn btn-default" onclick="location.href = '../index.jsp'"
-                       name="btn" value="Inicio"/>&nbsp;|
-                <input type="text" class="btn btn-default" onclick="location.href = '../ProveedoresC?valor=inactivo&btn=Proveedores'"
-                       name="btn" value="Ver inactivos"/>
-            </div>
+
             <%
+                } else {
+                    out.print("<h1>Lo sentimos. La página que busca no se pudo hallar.</h1>");
+                }
                 session.removeAttribute("proveedores");
             %>
-            <jsp:include page="../layouts/footer.jsp"></jsp:include>
-            </main>
-        </body>
-    </html>
-<%} else {
-        response.sendRedirect("../ProveedoresC?btn=Proveedores&valor=activo");
+            <jsp:include page="../layouts/footer.jsp"/>
+        </main>
+    </body>
+</html>
+<%
+        } else {
+            response.sendRedirect("../ProveedoresC?btn=Proveedores&valor=activo");
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
     }
 %>

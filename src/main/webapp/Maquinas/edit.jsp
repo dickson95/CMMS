@@ -3,6 +3,7 @@
     Created on : 30/05/2016, 10:10:43 PM
     Author     : esteban
 --%>
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Maquinas"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Secciones"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.TiposMaquinas"%>
@@ -12,21 +13,25 @@
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<Vendedores> vendedores = (ArrayList<Vendedores>) session.getAttribute("vendedores");
-    List<TiposMaquinas> tipos_maquinas = (ArrayList<TiposMaquinas>) session.getAttribute("tipos_maquinas");
-    List<Proveedores> proveedores = (ArrayList<Proveedores>) session.getAttribute("proveedores");
-    List<Secciones> secciones = (ArrayList<Secciones>) session.getAttribute("secciones");
-    List<Maquinas> maquinas = (ArrayList<Maquinas>) session.getAttribute("maquinas");
-    Maquinas maquina = (Maquinas) session.getAttribute("maquina");
-    System.out.println("Secciones;" + secciones);
-    System.out.println("tm;" + tipos_maquinas);
-    System.out.println("pro;" + proveedores);
-    System.out.println("maquinas;" + maquinas);
-    System.out.println("vendedores;" + vendedores);
-    if (vendedores == null || tipos_maquinas == null
-            || proveedores == null || secciones == null || maquinas == null) {
-        response.sendRedirect("../MaquinasC?btn=edit&id=" + maquina.getId() + "");
-    } else {
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        List<Vendedores> vendedores = (ArrayList<Vendedores>) session.getAttribute("vendedores");
+        List<TiposMaquinas> tipos_maquinas = (ArrayList<TiposMaquinas>) session.getAttribute("tipos_maquinas");
+        List<Proveedores> proveedores = (ArrayList<Proveedores>) session.getAttribute("proveedores");
+        List<Secciones> secciones = (ArrayList<Secciones>) session.getAttribute("secciones");
+        List<Maquinas> maquinas = (ArrayList<Maquinas>) session.getAttribute("maquinas");
+        Maquinas maquina = (Maquinas) session.getAttribute("maquina");
+        System.out.println("Secciones;" + secciones);
+        System.out.println("tm;" + tipos_maquinas);
+        System.out.println("pro;" + proveedores);
+        System.out.println("maquinas;" + maquinas);
+        System.out.println("vendedores;" + vendedores);
+        if (vendedores == null || tipos_maquinas == null
+                || proveedores == null || secciones == null || maquinas == null) {
+            response.sendRedirect("../MaquinasC?btn=edit&id=" + maquina.getId() + "");
+        } else {
 %>
 <!DOCTYPE html>
 <html>
@@ -37,7 +42,9 @@
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
+             <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=sesion.getRoles().getRol()%>"></jsp:param>
+            </jsp:include>
             </header>
             <main>
                 <h2>Editar máquina</h2>
@@ -102,20 +109,20 @@
                     </select>
                     <select  name="maquina_padre" required="" class="form-control form-group">
                         <option value="<%= maquina.getMaquinas().getId()%>"
-                                selected=""><%= maquina.getMaquinas().getModelo() %></option>
+                                selected=""><%= maquina.getMaquinas().getModelo()%></option>
                         <% for (Maquinas c : maquinas) {
                                 out.print("<option value=" + c.getId() + ">"
                                         + c.getModelo() + "</option>");
                             }%>
                     </select>
                     <textarea class="form-control" name="descripcion">
-<%= maquina.getDescripcion()%>
+                        <%= maquina.getDescripcion()%>
                     </textarea>
                     <textarea class="form-control" name="observacion">
-<%= maquina.getObservacion()%>
+                        <%= maquina.getObservacion()%>
                     </textarea>
                     <input type="hidden" value="edit" name="action"/>
-                    <input type="hidden" value="<%= maquina.getId() %>" name="id"/>
+                    <input type="hidden" value="<%= maquina.getId()%>" name="id"/>
                     <input class="btn btn-block btn-primary" type="submit"
                            name="btn" value="Guardar"/>
                 </form>
@@ -128,12 +135,15 @@
     </body>
 </html>
 <%
-        session.removeAttribute("vendedores");
-        session.removeAttribute("tipos_maquinas");
-        session.removeAttribute("proveedores");
-        session.removeAttribute("secciones");
-        session.removeAttribute("maquinas");
+            session.removeAttribute("vendedores");
+            session.removeAttribute("tipos_maquinas");
+            session.removeAttribute("proveedores");
+            session.removeAttribute("secciones");
+            session.removeAttribute("maquinas");
 
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
     }
 %>
 

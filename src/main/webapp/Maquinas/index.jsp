@@ -4,28 +4,56 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Localizaciones"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Maquinas"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<Maquinas> array = (ArrayList<Maquinas>) session.getAttribute("maquinas");
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        String rol = sesion.getRoles().getRol();
+        List<Maquinas> array = (ArrayList<Maquinas>) session.getAttribute("maquinas");
 %>
 <%if (array != null) {%>
 <!DOCTYPE html>
 <html>
     <head>
-        <title></title>
-        <jsp:include page="../layouts/aplication.jsp"></jsp:include>
+        <jsp:include page="../layouts/aplication.jsp">
+            <jsp:param name="title" value="Maquinas"></jsp:param>
+        </jsp:include>
         <script src="../assets/js/tables/maquinas.js"></script>
     </head>
     <body>
         <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
+            <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=rol%>"></jsp:param>
+            </jsp:include>
         </header>
         <main>
-            <h3>Lista de Maquinas</h3>
+            <div class="row">
+                <h3 class="col-md-6">Máquinas</h3>
+                <!--Botones generales-->
+                <div class="text-right col-md-6">
+                    <% if (!rol.equalsIgnoreCase("produccion")) {%>
+                    <button type="button" class="btn btn-default" aria-label="Left Align" 
+                            onclick="location.href = '../MaquinasC?btn=new'">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-default" aria-label="Left Align" 
+                            onclick="location.href = '../MaquinasC?valor=inactivo&btn=Maquinas'">
+                        <span class="glyphicon glyphicon-folder-close"></span>
+                    </button>
+                    <% } %>
+                    <button type="button" class="btn btn-default" aria-label="Left Align" 
+                            onclick="location.href = '../index.jsp'">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table ">
                     <thead>
@@ -78,18 +106,19 @@
                             <td  class="text-center"><%= a.getVendedores().getNombre()%></td>
                             <td  class="text-center"><%= a.getTiposMaquinas().getNombre()%></td>
                             <td  class="text-center"><%= a.getSecciones().getNombre()%></td>
-                            <% if(a.getMaquinas()==null){%>
-                                <td  class="text-center">Sin máquina padre</td>
-                            <%}else{%>
-                                <td  class="text-center"><%= a.getMaquinas().getModelo() %></td>
+                            <% if (a.getMaquinas() == null) {%>
+                            <td  class="text-center">Sin máquina padre</td>
+                            <%} else {%>
+                            <td  class="text-center"><%= a.getMaquinas().getModelo()%></td>
                             <%}%>
                             <td  class="text-center"><%= a.getEstado()%></td>
                             <td  class="text-center"><%= a.getFchUltAction()%></td>
                             <td  class="text-center"><%= a.getUserAction()%></td>
+                            <% if (!rol.equalsIgnoreCase("produccion")) {%>
                             <td  class="text-center">
                                 <input class="open-Modal btn btn-primary" type="button" 
-                                    name="btn" value="Editar" onclick="location.
-                                    href='../MaquinasC?btn=edit&id=<%= a.getId() %>' "/>
+                                       name="btn" value="Editar" onclick="location.
+                                                       href = '../MaquinasC?btn=edit&id=<%= a.getId()%>'"/>
                             </td>
                             <td>
                                 <input class="btn btn-danger" type="button" name="btn" 
@@ -98,6 +127,7 @@
                                                        '<%= a.getSerial()%>',
                                                        'Inactivo')" value="Desactivar"/>
                             </td>
+                            <% }  %>
                         </tr>
                         <%}
                         %>
@@ -105,23 +135,17 @@
                 </table>
 
             </div>
-            <!--Botones generales-->
-            <div class="text-center">
-                <input type="text" class="btn btn-default" onclick="location.href='../MaquinasC?btn=new'"
-                       name="btn" value="Nuevo"/>&nbsp;|
-                <input type="text" class="btn btn-default" onclick="location.href = '../index.jsp'"
-                       name="btn" value="Inicio"/>&nbsp;|
-                <input type="text" class="btn btn-default" onclick="location.href = '../MaquinasC?valor=inactivo&btn=Maquinas'"
-                       name="btn" value="Ver inactivos"/>
-            </div>
             <%
                 session.removeAttribute("maquinas");
             %>
             <jsp:include page="../layouts/footer.jsp"></jsp:include>
-        </main>
-    </body>
-</html>
+            </main>
+        </body>
+    </html>
 <%} else {
-        response.sendRedirect("../MaquinasC?btn=Maquinas&valor=activo");
+            response.sendRedirect("../MaquinasC?btn=Maquinas&valor=activo");
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
     }
 %>

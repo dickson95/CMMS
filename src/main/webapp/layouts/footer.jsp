@@ -6,20 +6,10 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
             
-        </main>
-        <footer class="footer">
-            <div class="navbar-nav navbar-inverse ">
-                <div class="">
-                    <div class="row">
-                        <div class="pull-left">
-                            By Esteban Higuita
-                        </div>
-                        <div class="pull-right">
-                            Copyright &copy;    
-                        </div>
-                    </div>
-                </div>
+        
+        <footer class="footer ">
+            <div class="container">
+              <p class="text-muted">Comuterized Maintenance Management System.</p>
             </div>
         </footer>
-    </body>
-</html>
+    

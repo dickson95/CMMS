@@ -6,6 +6,7 @@
 package com.esteban.cmms.maven.controller;
 
 import com.esteban.cmms.maven.controller.beans.TiposMaquinas;
+import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.model.TiposMaquinas_Model;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "TiposMaquinasC", urlPatterns = {"/TiposMaquinasC"})
 public class TiposMaquinas_Controller extends HttpServlet {
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -56,7 +57,7 @@ public class TiposMaquinas_Controller extends HttpServlet {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                response.sendRedirect("TiposMaquinas/index.jsp");
+                response.sendRedirect("TiposMaquinas");
             }else if(valor.equalsIgnoreCase("inactivo")){
                 try {
                     List<TiposMaquinas> tip = new ArrayList<TiposMaquinas>();
@@ -69,36 +70,38 @@ public class TiposMaquinas_Controller extends HttpServlet {
                 response.sendRedirect("TiposMaquinas/archivados.jsp");
             }
         } else if (btn.equalsIgnoreCase("guardarcambios")) {
+            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
             TiposMaquinas t = new TiposMaquinas();
             TiposMaquinas_Model td = new TiposMaquinas_Model();
             String Id = request.getParameter("tipoId");
             t.setId(Integer.parseInt(Id));
             t.setNombre(request.getParameter("nombreTipo"));
             t.setEstado(request.getParameter("Estado"));
-            t.setUserAction("esteban");
+            t.setUserAction(user.getNombre());
             try {
                 td.updateTipoMaquina(t);
             } catch (Exception ex) {
                 Logger.getLogger(TiposMaquinas_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("TiposMaquinas/index.jsp");
+            response.sendRedirect("TiposMaquinas");
 
         } else if (btn.equals("Guardar")) {
             System.out.println("Estoy en guardar");
             HttpSession sesion = request.getSession();
+            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
             sesion.removeAttribute("tipos");
             String name = request.getParameter("nombreTipo");
             TiposMaquinas tipo = new TiposMaquinas();
             TiposMaquinas_Model td = new TiposMaquinas_Model();
             tipo.setNombre(name);
             tipo.setEstado("Activo");
-            tipo.setUserAction("esteban");
+            tipo.setUserAction(user.getNombre());
             try {
                 td.addTipoMaquina(tipo);
             } catch (Exception ex) {
                 Logger.getLogger(TiposMaquinas_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("TiposMaquinas/index.jsp");
+            response.sendRedirect("TiposMaquinas");
         }
     }
 

@@ -4,36 +4,44 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Imagenes"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%List<Imagenes> array = (ArrayList<Imagenes>) session.getAttribute("imagenes");%>
+<%
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        List<Imagenes> array = (ArrayList<Imagenes>) session.getAttribute("imagenes");%>
 <%if (array != null) {%>
 <!DOCTYPE html>
 <html>
     <head>
         <jsp:include page="../layouts/aplication.jsp"></jsp:include>
-        <script src="../assets/js/tables/imagenes.js"></script>
-    </head>
-    <body>
-        <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
-        </header>
-        <main>
-            <h3>Lista de Imagenes</h3>
-            <div class="table-responsive">
-                <table class="table ">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Imagen</th>
-                            <th class="text-center">Estado de registro</th>
-                            <th class="text-center">Ultima modificación</th>
-                            <th class="text-center">Usuario</th>
-                            <th colspan="2"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <script src="../assets/js/tables/imagenes.js"></script>
+        </head>
+        <body>
+            <header>
+            <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=sesion.getRoles().getRol()%>"></jsp:param>
+            </jsp:include>
+            </header>
+            <main>
+                <h3>Lista de Imagenes</h3>
+                <div class="table-responsive">
+                    <table class="table ">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Imagen</th>
+                                <th class="text-center">Estado de registro</th>
+                                <th class="text-center">Ultima modificación</th>
+                                <th class="text-center">Usuario</th>
+                                <th colspan="2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <%for (Imagenes a : array) {%>
                         <tr>
                             <td class="text-left"><%= a.getImagen()%></td>
@@ -120,10 +128,13 @@
                 session.removeAttribute("imagenes");
             %> 
             <jsp:include page="../layouts/footer.jsp"></jsp:include>
-        </main>
-    </body>
-</html>
+            </main>
+        </body>
+    </html>
 <%} else {
-        response.sendRedirect("../ImagenesC?btn=Imagenes&valor=activo");
+            response.sendRedirect("../ImagenesC?btn=Imagenes&valor=activo");
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
     }
 %>

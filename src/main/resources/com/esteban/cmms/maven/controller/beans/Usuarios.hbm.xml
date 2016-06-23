@@ -11,14 +11,23 @@
             <column name="Id" />
             <generator class="identity" />
         </id>
+        <many-to-one name="roles" class="com.esteban.cmms.maven.controller.beans.Roles" fetch="select">
+            <column name="Rol_Id"/>
+        </many-to-one>
         <property name="usuario" type="string">
             <column name="Usuario" length="50" not-null="true" />
         </property>
         <property name="contrasena" type="string">
-            <column name="Contrasena" length="16" not-null="true" />
+            <column name="Contrasena" length="40" not-null="true" />
         </property>
-        <property name="rol" type="string">
-            <column name="Rol" length="20" not-null="false" />
+        <property name="nombre" type="string">
+            <column name="Nombre" length="100" not-null="true"/>
+        </property>
+        <property name="estado" type="string">
+            <column name="Estado" length="50" not-null="true"/>
+        </property>
+        <property name="fch_registro" type="timestamp">
+            <column name="Fch_registro" not-null="true"/>
         </property>
     </class>
 

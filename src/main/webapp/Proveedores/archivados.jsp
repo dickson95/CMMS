@@ -4,11 +4,17 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Proveedores"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%List<Proveedores> array = (ArrayList<Proveedores>) session.getAttribute("proveedores");%>
+<%
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        List<Proveedores> array = (ArrayList<Proveedores>) session.getAttribute("proveedores");%>
 <%if (array != null) {%>
 <!DOCTYPE html>
 <html>
@@ -18,30 +24,32 @@
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
-            </header>
-            <main>
-                <h3>Lista de Proveedores no Activos</h3>
-                <div class="table-responsive">
-                    <table class="table  table-hover">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Compañia</th>
-                                <th class="text-center">Teléfono</th>
-                                <th class="text-center">Dirección</th>
-                                <th class="text-center">Código postal</th>
-                                <th class="text-center">Email</th>
-                                <th class="text-center">Pagina web</th>
-                                <th class="text-center">Ciudad</th>
-                                <th class="text-center">Saldo Adeudado</th>
-                                <th class="text-center">Descripción del producto</th>
-                                <th class="text-center">Estado del registro</th>
-                                <th class="text-center">Ultima modificación</th>
-                                <th class="text-center">Modificado por</th>
-                                <th colspan="2"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=sesion.getRoles().getRol()%>"></jsp:param>
+            </jsp:include>
+        </header>
+        <main>
+            <h3>Lista de Proveedores no Activos</h3>
+            <div class="table-responsive">
+                <table class="table  table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Compañia</th>
+                            <th class="text-center">Teléfono</th>
+                            <th class="text-center">Dirección</th>
+                            <th class="text-center">Código postal</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Pagina web</th>
+                            <th class="text-center">Ciudad</th>
+                            <th class="text-center">Saldo Adeudado</th>
+                            <th class="text-center">Descripción del producto</th>
+                            <th class="text-center">Estado del registro</th>
+                            <th class="text-center">Ultima modificación</th>
+                            <th class="text-center">Modificado por</th>
+                            <th colspan="2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <%for (Proveedores a : array) {%>
                         <tr>
                             <td  class="text-left"><%= a.getNombreCompania()%></td>
@@ -50,7 +58,7 @@
                             <td  class="text-center"><%= a.getCodigoPostal()%></td>
                             <td  class="text-center"><%= a.getEmail()%></td>
                             <td  class="text-center"><%= a.getPaginaWeb()%></td>
-                                <td  class="text-center"><%= a.getCiudades().getNombre() + ", "
+                            <td  class="text-center"><%= a.getCiudades().getNombre() + ", "
                                     + a.getCiudades().getDepartamentos().getNombre() + ", "
                                     + a.getCiudades().getDepartamentos().getPaises().getNombre()%></td>
                             <td  class="text-center"><%= a.getSaldoAdeudado()%></td>
@@ -84,5 +92,9 @@
         </body>
     </html>
 <%} else {
-        response.sendRedirect("../ProveedoresC?btn=Proveedores&valor=inactivo");
-    }%>
+            response.sendRedirect("../ProveedoresC?btn=Proveedores&valor=inactivo");
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
+    }
+%>

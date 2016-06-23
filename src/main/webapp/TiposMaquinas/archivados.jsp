@@ -4,39 +4,49 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.TiposMaquinas"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%List<TiposMaquinas> ti = (ArrayList<TiposMaquinas>) session.getAttribute("tipos");%>
-<%if (ti != null) {%>
+<%
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        List<TiposMaquinas> ti = (ArrayList<TiposMaquinas>) session.getAttribute("tipos");
+
+        if (ti != null) {
+%>
 <!DOCTYPE html>
 <html>
     <head>
         <title></title>
         <jsp:include page="../layouts/aplication.jsp"></jsp:include>
-        <script src="../assets/js/tables/tiposMaquinas.js"></script>
+            <script src="../assets/js/tables/tiposMaquinas.js"></script>
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
-            </header>
-            <main>
-                <h3>Lista de Tipos no Activos</h3>
-                <div class="table-responsive">
-                    <table class="table  table-hover">
-                        <thead>
-                        <th class="text-center">
-                            Nombre
-                        </th>
-                        <th class="text-center">Estado de registro</th>
-                        <th class="text-center">Ultima modificación</th>
-                        <th class="text-center">Usuario</th>
-                        <th class="text-center">
-                            Acciones
-                        </th>
-                        </thead>
-                        <tbody>
+            <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=sesion.getRoles().getRol()%>"></jsp:param>
+            </jsp:include>
+        </header>
+        <main>
+            <h3>Lista de Tipos no Activos</h3>
+            <div class="table-responsive">
+                <table class="table  table-hover">
+                    <thead>
+                    <th class="text-center">
+                        Nombre
+                    </th>
+                    <th class="text-center">Estado de registro</th>
+                    <th class="text-center">Ultima modificación</th>
+                    <th class="text-center">Usuario</th>
+                    <th class="text-center">
+                        Acciones
+                    </th>
+                    </thead>
+                    <tbody>
                         <%for (TiposMaquinas t : ti) {%>
                         <tr>
                             <td  class="text-left"><%= t.getNombre()%></td>
@@ -63,6 +73,11 @@
             </main>
         </body>
     </html>
-<%} else {
-        response.sendRedirect("../TiposMaquinasC?btn=Tipos&valor=inactivo");
-    }%>
+<%
+        } else {
+            response.sendRedirect("../TiposMaquinasC?btn=Tipos&valor=inactivo");
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
+    }
+%>

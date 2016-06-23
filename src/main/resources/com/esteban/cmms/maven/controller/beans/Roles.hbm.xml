@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.esteban.cmms.maven.controller.beans.Roles" table="Roles">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        <property name="rol" type="string">
+            <column name="Rol" length="50" not-null="true" />
+        </property>
+        <property name="tipos" type="boolean">
+            <column name="Tipos" not-null="true" />
+        </property>
+        <property name="localizaciones" type="boolean">
+            <column name="Localizaciones" not-null="true" />
+        </property>
+        <property name="proveedores" type="boolean">
+            <column name="Proveedores" not-null="true" />
+        </property>
+        <property name="secciones" type="boolean">
+            <column name="Secciones" not-null="true" />
+        </property>
+        <property name="imagenes" type="boolean">
+            <column name="Imagenes" not-null="true" />
+        </property>
+        <property name="documentos" type="boolean">
+            <column name="Documentos" not-null="true" />
+        </property>
+        <property name="maquinas" type="boolean">
+            <column name="Maquinas" not-null="true" />
+        </property>
+        <property name="usuarios" type="boolean">
+            <column name="Usuarios" not-null="true" />
+        </property>
+        <property name="vendedores" type="boolean">
+            <column name="Vendedores" not-null="true" />
+        </property>
+        <set name="usuarioses" table="Usuarios" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Rol_Id" />
+            </key>
+            <one-to-many class="com.esteban.cmms.maven.controller.beans.Usuarios" />
+        </set>
+    </class>
+</hibernate-mapping>

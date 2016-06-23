@@ -9,6 +9,7 @@ import com.esteban.cmms.maven.controller.beans.Maquinas;
 import com.esteban.cmms.maven.controller.beans.Proveedores;
 import com.esteban.cmms.maven.controller.beans.Secciones;
 import com.esteban.cmms.maven.controller.beans.TiposMaquinas;
+import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.controller.beans.Vendedores;
 import com.esteban.cmms.maven.model.Maquinas_Model;
 import com.esteban.cmms.maven.model.Proveedores_Model;
@@ -117,6 +118,7 @@ public class Maquinas_Controller extends HttpServlet {
             );
             Maquinas ma = new Maquinas();
             ma.setMaquinas(m);
+            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
             Maquinas pojo = new Maquinas(
                     f_compra, f_marcha,
                     request.getParameter("fabricante"),
@@ -133,7 +135,7 @@ public class Maquinas_Controller extends HttpServlet {
                     ma.getMaquinas(),
                     request.getParameter("descripcion"),
                     request.getParameter("observacion"),
-                    "esteban", "Activo"
+                    user.getNombre(), "Activo"
             );
             Maquinas_Model model = new Maquinas_Model();
             try {
@@ -148,7 +150,7 @@ public class Maquinas_Controller extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(Maquinas_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("Maquinas/index.jsp");
+            response.sendRedirect("Maquinas");
         } else if (btn.equalsIgnoreCase("edit")) {
             HttpSession sesion = request.getSession();
             Maquinas result = new Maquinas_Model().

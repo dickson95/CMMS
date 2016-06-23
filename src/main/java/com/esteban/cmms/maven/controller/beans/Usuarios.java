@@ -5,24 +5,29 @@
  */
 package com.esteban.cmms.maven.controller.beans;
 
+import java.util.Date;
+
 /**
  *
  * @author esteban
  */
 public class Usuarios {
 
-    Integer id;
-    String usuario;
-    String contrasena;
-    String rol;
+    private Integer id;
+    private String usuario;
+    private String contrasena;
+    private String nombre;
+    private String estado;
+    private Date fch_registro;
+    private Roles roles;
 
     public Usuarios() {
     }
 
-    public Usuarios(String usuario, String contrasena, String rol) {
+    public Usuarios(String usuario, String contrasena, Roles roles) {
         this.usuario = usuario;
         this.contrasena = contrasena;
-        this.rol = rol;
+        this.roles = roles;
     }
     
     public Integer getId() {
@@ -49,12 +54,38 @@ public class Usuarios {
         this.contrasena = contrasena;
     }
 
-    public String getRol() {
-        return rol;
+    public Roles getRoles() {
+        return roles;
     }
 
-    public void setRol(String rol) {
-        this.rol = rol;
+    public void setRoles(Roles roles) {
+        this.roles = roles;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Date getFch_registro() {
+        return fch_registro;
+    }
+
+    public void setFch_registro(Date fch_registro) {
+        this.fch_registro = fch_registro;
+    }
+    
+    
     
 }

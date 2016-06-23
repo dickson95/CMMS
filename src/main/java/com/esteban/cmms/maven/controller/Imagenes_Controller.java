@@ -6,6 +6,7 @@
 package com.esteban.cmms.maven.controller;
 
 import com.esteban.cmms.maven.controller.beans.Imagenes;
+import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.model.Imagenes_Model;
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class Imagenes_Controller extends HttpServlet {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                response.sendRedirect("Imagenes/index.jsp");
+                response.sendRedirect("Imagenes");
             }else if(valor.equalsIgnoreCase("inactivo")){
                 try {
                     result = model.listNoActive();
@@ -76,23 +77,24 @@ public class Imagenes_Controller extends HttpServlet {
             Imagenes_Model model = new Imagenes_Model();
             String Id = request.getParameter("imagenId");
             //Datos para el pojo
+            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
             pojo.setId(Integer.parseInt(Id));
             pojo.setEstado(request.getParameter("nombreImagen"));
             pojo.setEstado(request.getParameter("codigo")); 
             pojo.setEstado(request.getParameter("Estado"));
-            pojo.setUserAction("esteban");
+            pojo.setUserAction(user.getNombre());
             try {
                 model.updateImagen(pojo);
             } catch (Exception ex) {
                 Logger.getLogger(Imagenes_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("Imagenes/index.jsp");
+            response.sendRedirect("Imagenes");
 
         } else if (btn.equalsIgnoreCase("guardar")) {
             try {
                 HttpSession sesion = request.getSession();
                 sesion.removeAttribute("imagenes");
-                
+                Usuarios user = (Usuarios)sesion.getAttribute("usuario");
                 FileItemFactory itemFactory = new DiskFileItemFactory();
                 ServletFileUpload upload = new ServletFileUpload(itemFactory);
                 
@@ -115,9 +117,9 @@ public class Imagenes_Controller extends HttpServlet {
                 Imagenes_Model model = new Imagenes_Model();
                 pojo.setEstado(request.getParameter("codigo"));
                 pojo.setEstado("Activo");
-                pojo.setUserAction("esteban");
+                pojo.setUserAction(user.getNombre());
                 model.addImagen(pojo);
-                response.sendRedirect("Imagenes/index.jsp");
+                response.sendRedirect("Imagenes");
             } catch (FileUploadException ex) {
                 Logger.getLogger(Imagenes_Controller.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {

@@ -5,7 +5,7 @@
  */
 package com.esteban.cmms.maven.model;
 
-import com.esteban.cmms.maven.controller.beans.Usuarios;
+import com.esteban.cmms.maven.controller.beans.Roles;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
@@ -16,8 +16,8 @@ import org.hibernate.Transaction;
  *
  * @author esteban
  */
-public class Usuarios_Model {
-    public void addUsuario(Usuarios obj) {
+public class Roles_Model {
+    public void addRol(Roles obj) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -36,12 +36,12 @@ public class Usuarios_Model {
     }
     
 
-    public void deleteUsuario(int objid) {
+    public void deleteRol(int objid) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             trns = session.beginTransaction();
-            Usuarios obj = (Usuarios) session.load(Usuarios.class, new Integer(objid));
+            Roles obj = (Roles) session.load(Roles.class, new Integer(objid));
             session.delete(obj);
             session.getTransaction().commit();
         } catch (RuntimeException e) {
@@ -55,7 +55,7 @@ public class Usuarios_Model {
         }
     }
 
-    public void updateUsuario(Usuarios obj) {
+    public void updateRol(Roles obj) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -72,36 +72,13 @@ public class Usuarios_Model {
             session.close();
         }
     }
-    
-    public void vetarUsuario(String estado, Integer id) {
+    public List<Roles> getAllRoles() {
+        List<Roles> obj = new ArrayList<Roles>();
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             trns = session.beginTransaction();
-            Query query = session.createQuery("UPDATE Usuarios SET Estado = :estado WHERE Id = :id");
-            query.setString("estado", estado);
-            query.setInteger("id", id);
-            query.executeUpdate();
-            session.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (trns != null) {
-                trns.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
-    }
-
-    public List<Usuarios> getAllUsuarios() {
-        List<Usuarios> obj = new ArrayList<Usuarios>();
-        Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try {
-            trns = session.beginTransaction();
-            obj = session.createQuery("from Usuarios as user"
-                    + " left join fetch user.roles").list();
+            obj = session.createQuery("from Roles").list();
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {
@@ -110,13 +87,13 @@ public class Usuarios_Model {
         }
         return obj;
     }
-    public List<Usuarios> listNoActive() {
-        List<Usuarios> obj = new ArrayList<Usuarios>();
+    public List<Roles> listNoActive() {
+        List<Roles> obj = new ArrayList<Roles>();
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             trns = session.beginTransaction();
-            obj = session.createQuery("from Usuarios").list();
+            obj = session.createQuery("from Roles").list();
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {
@@ -126,20 +103,16 @@ public class Usuarios_Model {
         return obj;
     }
 
-    public Object getUsuarioByUC(String usuario, String contrasena) {
+    public Object getRolesById(Integer id) {
         Object obj = null;
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             trns = session.beginTransaction();
-            String queryString = "from Usuarios as users"
-                    + " left join fetch users.roles"
-                    + " where users.usuario = :usuario and"
-                    + " users.contrasena = :contrasena and"
-                    + " users.estado = 'Activo'";
+            String queryString = "from Roles "
+                    + " where Id = :id";
             Query query = session.createQuery(queryString);
-            query.setString("usuario", usuario);
-            query.setString("contrasena", contrasena);
+            query.setInteger("id", id);
             obj =  query.uniqueResult();
         } catch (RuntimeException e) {
             e.printStackTrace();

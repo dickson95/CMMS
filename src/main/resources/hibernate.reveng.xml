@@ -13,5 +13,6 @@
   <table-filter match-name="Secciones"/>
   <table-filter match-name="TiposMaquinas"/>
   <table-filter match-name="Paises"/>
+  <table-filter match-name="Roles"/>
   <table-filter match-name="Usuarios"/>
 </hibernate-reverse-engineering>

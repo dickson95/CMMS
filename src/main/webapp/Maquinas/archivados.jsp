@@ -4,11 +4,17 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Secciones"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%List<Secciones> array = (ArrayList<Secciones>) session.getAttribute("secciones");%>
+<%
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+    List<Secciones> array = (ArrayList<Secciones>) session.getAttribute("secciones");%>
 <%if (array != null) {%>
 <!DOCTYPE html>
 <html>
@@ -19,7 +25,9 @@
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
+             <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=sesion.getRoles().getRol()%>"></jsp:param>
+            </jsp:include>
             </header>
             <main>
                 <h3>Lista de Localizaciones no Activos</h3>
@@ -67,4 +75,8 @@
     </html>
 <%} else {
         response.sendRedirect("../SeccionesC?btn=Secciones&valor=inactivo");
-    }%>
+    }
+} else {
+        response.sendRedirect("../Usuarios/login.jsp");
+    }
+%>

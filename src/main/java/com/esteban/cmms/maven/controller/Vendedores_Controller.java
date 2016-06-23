@@ -6,6 +6,7 @@
 package com.esteban.cmms.maven.controller;
 
 import com.esteban.cmms.maven.controller.beans.Proveedores;
+import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.controller.beans.Vendedores;
 import com.esteban.cmms.maven.model.Proveedores_Model;
 import com.esteban.cmms.maven.model.Vendedores_Model;
@@ -61,7 +62,7 @@ public class Vendedores_Controller extends HttpServlet {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                response.sendRedirect("Vendedores/index.jsp");
+                response.sendRedirect("Vendedores");
             }else if(valor.equalsIgnoreCase("inactivo")){
                 try {
                     result = model.listNoActive();
@@ -75,6 +76,7 @@ public class Vendedores_Controller extends HttpServlet {
         } else if (btn.equalsIgnoreCase("guardarcambios")) {
             Vendedores_Model model = new Vendedores_Model();
             Proveedores p = new Proveedores(Integer.parseInt(request.getParameter("proveedor")));
+            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
             Vendedores pojo = new Vendedores(
                 Integer.parseInt(request.getParameter("id")),
                 p,
@@ -82,19 +84,20 @@ public class Vendedores_Controller extends HttpServlet {
                 request.getParameter("estado"),
                 request.getParameter("email"),
                 Integer.parseInt(request.getParameter("codigo")),
-                "esteban"
+                user.getNombre()
             );
             try {
                 model.updateVendedor(pojo);
             } catch (Exception ex) {
                 Logger.getLogger(Vendedores_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("Vendedores/index.jsp");
+            response.sendRedirect("Vendedores");
 
         } else if (btn.equalsIgnoreCase("guardar")) {
             
             HttpSession sesion = request.getSession();
             sesion.removeAttribute("vendedores");
+            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
             Proveedores p = new Proveedores(Integer.parseInt(
                     request.getParameter("proveedor")));
             Vendedores pojo = new Vendedores(
@@ -103,7 +106,7 @@ public class Vendedores_Controller extends HttpServlet {
                 request.getParameter("email"),
                 "Activo",
                 Integer.parseInt(request.getParameter("codigo")),
-                "esteban"
+                user.getNombre()
             );
             Vendedores_Model model = new Vendedores_Model();           
             
@@ -112,7 +115,7 @@ public class Vendedores_Controller extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(Vendedores_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("Vendedores/index.jsp");
+            response.sendRedirect("Vendedores");
         }
     }
 

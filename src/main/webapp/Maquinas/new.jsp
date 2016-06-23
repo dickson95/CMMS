@@ -4,6 +4,7 @@
     Author     : esteban
 --%>
 
+<%@page import="com.esteban.cmms.maven.controller.beans.Usuarios"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Maquinas"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.Secciones"%>
 <%@page import="com.esteban.cmms.maven.controller.beans.TiposMaquinas"%>
@@ -13,16 +14,20 @@
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<Vendedores> vendedores = (ArrayList<Vendedores>) session.getAttribute("vendedores");
-    List<TiposMaquinas> tipos_maquinas = (ArrayList<TiposMaquinas>) session.getAttribute("tipos_maquinas");
-    List<Proveedores> proveedores = (ArrayList<Proveedores>) session.getAttribute("proveedores");
-    List<Secciones> secciones = (ArrayList<Secciones>) session.getAttribute("secciones");
-    List<Maquinas> maquinas = (ArrayList<Maquinas>) session.getAttribute("maquinas");
-    System.out.println("Secciones;" + secciones);
-    if (vendedores==null || tipos_maquinas==null
-            || proveedores==null || secciones==null || maquinas==null) {
-        response.sendRedirect("../MaquinasC?btn=new");
-    } else {
+    Object s = session.getAttribute("usuario");
+    System.out.println("ya tome el usuario" + s);
+    if (s != null) {
+        Usuarios sesion = (Usuarios) s;
+        List<Vendedores> vendedores = (ArrayList<Vendedores>) session.getAttribute("vendedores");
+        List<TiposMaquinas> tipos_maquinas = (ArrayList<TiposMaquinas>) session.getAttribute("tipos_maquinas");
+        List<Proveedores> proveedores = (ArrayList<Proveedores>) session.getAttribute("proveedores");
+        List<Secciones> secciones = (ArrayList<Secciones>) session.getAttribute("secciones");
+        List<Maquinas> maquinas = (ArrayList<Maquinas>) session.getAttribute("maquinas");
+        System.out.println("Secciones;" + secciones);
+        if (vendedores == null || tipos_maquinas == null
+                || proveedores == null || secciones == null || maquinas == null) {
+            response.sendRedirect("../MaquinasC?btn=new");
+        } else {
 %>
 <!DOCTYPE html>
 <html>
@@ -33,7 +38,9 @@
         </head>
         <body>
             <header>
-            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
+             <jsp:include page="../layouts/navigation.jsp">
+                <jsp:param name="rol" value="<%=sesion.getRoles().getRol()%>"></jsp:param>
+            </jsp:include>
             </header>
             <main>
                 <h2>Nueva máquina</h2>
@@ -115,11 +122,14 @@
     </body>
 </html>
 <%
-        session.removeAttribute("vendedores");
-        session.removeAttribute("tipos_maquinas");
-        session.removeAttribute("proveedores");
-        session.removeAttribute("secciones");
-        session.removeAttribute("maquinas");
+            session.removeAttribute("vendedores");
+            session.removeAttribute("tipos_maquinas");
+            session.removeAttribute("proveedores");
+            session.removeAttribute("secciones");
+            session.removeAttribute("maquinas");
 
+        }
+    } else {
+        response.sendRedirect("../Usuarios/login.jsp");
     }
 %>

@@ -6,6 +6,7 @@
 package com.esteban.cmms.maven.controller;
 
 import com.esteban.cmms.maven.controller.beans.Documentos;
+import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.model.Documentos_Model;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class Documentos_Controller extends HttpServlet {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                response.sendRedirect("Documentos/index.jsp");
+                response.sendRedirect("Documentos");
             }else if(valor.equalsIgnoreCase("inactivo")){
                 try {
                     result = model.listNoActive();
@@ -69,37 +70,38 @@ public class Documentos_Controller extends HttpServlet {
             Documentos_Model model = new Documentos_Model();
             String Id = request.getParameter("documentoId");
             //Datos para el pojo
+            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
             pojo.setId(Integer.parseInt(Id));
             pojo.setEstado(request.getParameter("nombreDocumento"));
             pojo.setEstado(request.getParameter("codigo")); 
             pojo.setEstado(request.getParameter("Estado"));
-            pojo.setUserAction("esteban");
+            pojo.setUserAction(user.getNombre());
             try {
                 model.updateDocumento(pojo);
             } catch (Exception ex) {
                 Logger.getLogger(Documentos_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("Documentos/index.jsp");
+            response.sendRedirect("Documentos");
 
         } else if (btn.equalsIgnoreCase("guardar")) {
             System.out.println("Este es guardar");
             HttpSession sesion = request.getSession();
             sesion.removeAttribute("documentos");
             String name = request.getParameter("nombreDocumento");
-            
+            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
             Documentos pojo = new Documentos();
             Documentos_Model model = new Documentos_Model();
             pojo.setEstado(name);
             pojo.setEstado(request.getParameter("codigo"));
             pojo.setEstado("Activo");
-            pojo.setUserAction("esteban");
+            pojo.setUserAction(user.getNombre());
             
             try {
                 model.addDocumento(pojo);
             } catch (Exception ex) {
                 Logger.getLogger(Documentos_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("Documentos/index.jsp");
+            response.sendRedirect("Documentos");
         }
     }
 

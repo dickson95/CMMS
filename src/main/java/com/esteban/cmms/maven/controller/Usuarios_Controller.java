@@ -5,10 +5,11 @@
  */
 package com.esteban.cmms.maven.controller;
 
+import com.esteban.cmms.maven.controller.beans.Roles;
 import com.esteban.cmms.maven.controller.beans.Usuarios;
+import com.esteban.cmms.maven.model.Roles_Model;
 import com.esteban.cmms.maven.model.Usuarios_Model;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,56 +48,69 @@ public class Usuarios_Controller extends HttpServlet {
             HttpSession sesion = request.getSession();
             Usuarios result = new Usuarios();
             Object r;
-                try {
-                    System.out.println(result.getContrasena());
-                    r = model.getUsuarioByUC(
-                            request.getParameter("usuario"),
-                            request.getParameter("contrasena")
-                    );
-                    
-                    if(r == null){
-                        System.out.println("Resultado nulo, no accede al sistema");
-                        response.sendRedirect("Static_pages/error.jsp");
-                    }else{
-                        result = (Usuarios) r;
-                        System.out.println(result.getUsuario());
-                        sesion.setAttribute("usuario", result);
-                        response.sendRedirect("Static_pages/home.jsp");
-                    }
-                    
-                } catch (Exception e) {
-                    System.out.println(e);
+            try {
+                System.out.println(result.getContrasena());
+                r = model.getUsuarioByUC(
+                        request.getParameter("usuario"),
+                        request.getParameter("contrasena")
+                );
+
+                if (r == null) {
+                    System.out.println("Resultado nulo, no accede al sistema");
                     response.sendRedirect("Static_pages/error.jsp");
+                } else {
+                    result = (Usuarios) r;
+                    System.out.println(result.getRoles().getRol());
+                    sesion.setAttribute("usuario", result);
+                    response.sendRedirect("Static_pages/home.jsp");
                 }
-                
+
+            } catch (Exception e) {
+                System.out.println(e);
+                response.sendRedirect("Static_pages/error.jsp");
+            }
+
         } else if (btn.equalsIgnoreCase("registrar")) {
+            Roles rol = new Roles(
+                    Integer.parseInt(request.getParameter("rol"))
+            );
             Usuarios pojo = new Usuarios(
                     request.getParameter("usuario"),
                     request.getParameter("contrasena"),
-                    "admin"
+                    rol
             );
-            Usuarios_Model model = new Usuarios_Model();
             try {
-                model.addUsuario(pojo);
+                new Usuarios_Model().addUsuario(pojo);
             } catch (Exception ex) {
                 Logger.getLogger(Usuarios_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("Usuarios/login.jsp");
+            response.sendRedirect("Usuarios");
 
-        } else if (btn.equalsIgnoreCase("guardar")) {
-            System.out.println("Este es guardar");
+        } else if (btn.equalsIgnoreCase("salir")) {
             HttpSession sesion = request.getSession();
-            sesion.removeAttribute("usuarios");
-            
-            Usuarios pojo = new Usuarios();
-            Usuarios_Model model = new Usuarios_Model();
-            
+            sesion.invalidate();
+            System.out.println("Sesson invalidada");
+            response.sendRedirect("Usuarios");
+        } else if (btn.equalsIgnoreCase("usuarios")) {
+            List<Usuarios> result = new Usuarios_Model().getAllUsuarios();
+            List<Roles> roles = new Roles_Model().getAllRoles();
+            request.getSession();
+            HttpSession sesion = request.getSession();
+            sesion.setAttribute("usuarios", result);
+            sesion.setAttribute("roles", roles);
+            response.sendRedirect("Usuarios");
+        } else if (btn.equalsIgnoreCase("vetar")) {
             try {
-                model.addUsuario(pojo);
-            } catch (Exception ex) {
-                Logger.getLogger(Usuarios_Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            response.sendRedirect("Usuarios/index.jsp");
+                new Usuarios_Model().vetarUsuario(
+                        "Vetado",
+                        Integer.parseInt(request.getParameter("id"))
+                );
+            } catch (Exception e) {
+                System.out.println(e);
+            }finally{
+                response.sendRedirect("Usuarios");
+            }          
+
         }
     }
 

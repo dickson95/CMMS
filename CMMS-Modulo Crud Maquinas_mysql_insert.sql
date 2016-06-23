@@ -41,3 +41,11 @@ INSERT INTO TiposMaquinas(Nombre, UserAction) VALUES
     ('Fileteadora', 'esteban'),
     ('Plana', 'esteban'),
     ('Recubridora', 'esteban');
+
+#Tabla roles
+INSERT INTO roles(`Rol`,`Tipos`,`Localizaciones`,`Secciones`,`Proveedores`,`Vendedores`,`Imagenes`,`Documentos`,`Maquinas`,`Usuarios`)
+values ('administrador', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
+
+#Tabla Usuarios
+INSERT INTO usuarios(`Nombre`,`Usuario`,`Contrasena`,`Rol_Id`)
+VALUES('ESTEBAN', 'admin@prueba.com','123', 1);
