@@ -1,0 +1,23 @@
+<%-- 
+    Document   : error
+    Created on : 10/06/2016, 11:44:34 AM
+    Author     : esteban
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <jsp:include page="../layouts/aplication.jsp"></jsp:include>
+    </head>
+    <body>
+        <header>
+            <jsp:include page="../layouts/navigation.jsp"></jsp:include>
+        </header>
+        <main class="container">
+            <h1>Lo sentimos, ocurrió un error en el sistema. Revise su acción <br>
+                anterior o por favor contactese con el servicio técnico</h1>
+        </main>
+    </body>
+</html>

@@ -17,7 +17,12 @@ import org.hibernate.Transaction;
  * @author esteban
  */
 public class Vendedores_Model {
-
+    /**
+     * Añade un nuevo vendedor a la tabla
+     *
+     * @param obj un objeto tipo Vendedores correctamente diligenciado, no es
+     * necesario suministrar el id para este caso
+     */
     public void addVendedor(Vendedores obj) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -36,7 +41,12 @@ public class Vendedores_Model {
         }
     }
     
-
+    /**
+     * Elimina un vendedor de forma definitiva de la tabla en la base de
+     * datos
+     *
+     * @param objid entero que corresponde al registro que quiere eliminar
+     */
     public void deleteVendedor(int objid) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -55,7 +65,13 @@ public class Vendedores_Model {
             session.close();
         }
     }
-
+    
+    /**
+     * Actualiza un vendedor
+     *
+     * @param obj Objeto de tipo Vendedores, es necesario que el id este incluido
+     * en los datos del pojo para una correcta actualización
+     */
     public void updateVendedor(Vendedores obj) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -74,6 +90,11 @@ public class Vendedores_Model {
         }
     }
 
+    /**
+     * Obtiene una lista de los vendedores con estado activo
+     *
+     * @return lista de tipo Vendedores con los datos correspondientes
+     */
     public List<Vendedores> getAllVendedores() {
         List<Vendedores> obj = new ArrayList<Vendedores>();
         Transaction trns = null;
@@ -91,6 +112,12 @@ public class Vendedores_Model {
         }
         return obj;
     }
+    
+    /**
+     * Obtiene una lista de los vendedores con estado inactivo
+     *
+     * @return lista de tipo Vendedores con los datos correspondientes
+     */
     public List<Vendedores> listNoActive() {
         List<Vendedores> obj = new ArrayList<Vendedores>();
         Transaction trns = null;
@@ -109,6 +136,13 @@ public class Vendedores_Model {
         return obj;
     }
 
+    /**
+     * Obtiene un único registro de la base de datos en la tabla vendedores
+     *
+     * @param objid entero correspondiente al id del registro en la base de
+     * datos
+     * @return un único resultado tipo Vendedores con los datos del registro.
+     */
     public Vendedores getVendedorById(int objid) {
         Vendedores obj = null;
         Transaction trns = null;

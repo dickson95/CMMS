@@ -1,4 +1,4 @@
- /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6,8 +6,10 @@
 package com.esteban.cmms.maven.controller;
 
 import com.esteban.cmms.maven.controller.beans.Imagenes;
+import com.esteban.cmms.maven.controller.beans.Maquinas;
 import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.model.Imagenes_Model;
+import com.esteban.cmms.maven.model.Maquinas_Model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,84 +48,110 @@ public class Imagenes_Controller extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String btne = request.getParameter("btn");
-        String btn = btne.replaceAll("\\s", "");
-
-        if (btn.equalsIgnoreCase("imagenes")) {
-            Imagenes_Model model = new Imagenes_Model();
-            HttpSession sesion = request.getSession();
-            String valor = request.getParameter("valor");
-            List<Imagenes> result = new ArrayList<Imagenes>();
-            if (valor.equalsIgnoreCase("activo")) {
-                try {
-                    result = model.getAllImagenes();
-                    sesion.setAttribute("imagenes", result);
-
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-                response.sendRedirect("Imagenes");
-            }else if(valor.equalsIgnoreCase("inactivo")){
-                try {
-                    result = model.listNoActive();
-                    sesion.setAttribute("imagenes", result);
-
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-                response.sendRedirect("Imagenes/archivados.jsp");
-            }
-        } else if (btn.equalsIgnoreCase("guardarcambios")) {
-            Imagenes pojo = new Imagenes();
-            Imagenes_Model model = new Imagenes_Model();
-            String Id = request.getParameter("imagenId");
-            //Datos para el pojo
-            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
-            pojo.setId(Integer.parseInt(Id));
-            pojo.setEstado(request.getParameter("nombreImagen"));
-            pojo.setEstado(request.getParameter("codigo")); 
-            pojo.setEstado(request.getParameter("Estado"));
-            pojo.setUserAction(user.getNombre());
-            try {
-                model.updateImagen(pojo);
-            } catch (Exception ex) {
-                Logger.getLogger(Imagenes_Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            response.sendRedirect("Imagenes");
-
-        } else if (btn.equalsIgnoreCase("guardar")) {
+        if (btne==null) {
             try {
                 HttpSession sesion = request.getSession();
                 sesion.removeAttribute("imagenes");
-                Usuarios user = (Usuarios)sesion.getAttribute("usuario");
+                Usuarios user = (Usuarios) sesion.getAttribute("usuario");
                 FileItemFactory itemFactory = new DiskFileItemFactory();
                 ServletFileUpload upload = new ServletFileUpload(itemFactory);
-                
+                String btn = null;
+                Maquinas m = new Maquinas();
                 List<FileItem> items = upload.parseRequest(request);
+                Imagenes pojo = new Imagenes();
+                pojo.setUserAction(user.getNombre());
                 
                 for (FileItem item : items) {
-                    if(!item.isFormField()){
+                    if (!item.isFormField()) {
                         String contentType = item.getContentType();
-                        if(!contentType.equals("image/png")){ //|| !contentType.equals("image/jpg")
-                              continue;
+                        if (!contentType.equals("image/png")) { //|| !contentType.equals("image/jpg")
+                            continue;
                         }
                         File img = new File("/home/esteban/NetBeansProjects/"
-                                + "CMMS-Hibernate/web/Imagenes/images_cli",
-                                new Date()+item.getName());
+                                + "CMMS-Maven/src/main/webapp/Imagenes/images_cli",
+                                new Date() + item.getName());
                         item.write(img);
-                        
+                        pojo.setImagen(img.getName());
+                    }
+                    if(item.isFormField()){
+                        if(item.getFieldName().equalsIgnoreCase("maquina")){
+                            int idm = Integer.parseInt(item.getString());
+                            System.out.println("Maquina");
+                            m.setId(idm);
+                            pojo.setMaquinas(m);
+                        }else if(item.getFieldName().equalsIgnoreCase("btn")){
+                            System.out.println("Guardar cambios");
+                            btn = item.getString().replaceAll("\\s", "");                            
+                        }else if(item.getFieldName().equalsIgnoreCase("id")){
+                            System.out.println("id imagen");
+                            pojo.setId(Integer.parseInt(item.getString()));
+                        }
                     }
                 }
-                Imagenes pojo = new Imagenes();
-                Imagenes_Model model = new Imagenes_Model();
-                pojo.setEstado(request.getParameter("codigo"));
                 pojo.setEstado("Activo");
-                pojo.setUserAction(user.getNombre());
-                model.addImagen(pojo);
+                System.out.println("ste es el boton"+btn);
+                if(btn.equalsIgnoreCase("actualizar")){
+                    new Imagenes_Model().updateImagen(pojo);
+                }else{
+                    new Imagenes_Model().addImagen(pojo);
+                }                
                 response.sendRedirect("Imagenes");
+
             } catch (FileUploadException ex) {
-                Logger.getLogger(Imagenes_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             } catch (Exception ex) {
-                Logger.getLogger(Imagenes_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
+            }
+        } else {
+            String btn = btne.replaceAll("\\s", "");
+
+            if (btn.equalsIgnoreCase("imagenes")) {
+                Imagenes_Model model = new Imagenes_Model();
+                HttpSession sesion = request.getSession();
+                String valor = request.getParameter("valor");
+                List<Imagenes> result = new ArrayList<Imagenes>();
+                if (valor.equalsIgnoreCase("activo")) {
+                    try {
+                        result = model.getAllImagenes();
+                        sesion.setAttribute("imagenes", result);
+                        sesion.setAttribute("maquinas", new Maquinas_Model().getAllMaquinas());
+
+                    } catch (Exception e) {
+                        System.out.println(e);
+                        response.sendRedirect("Static_pages/errores.jsp");
+                    }
+                    response.sendRedirect("Imagenes");
+                } else if (valor.equalsIgnoreCase("inactivo")) {
+                    try {
+                        result = model.listNoActive();
+                        sesion.setAttribute("imagenes", result);
+
+                    } catch (Exception e) {
+                        System.out.println(e);
+                        response.sendRedirect("Static_pages/errores.jsp");
+                    }
+                    response.sendRedirect("Imagenes/archivados.jsp");
+                }
+            } else if (btn.equalsIgnoreCase("estado")) {
+                System.out.println("Definición de estado");
+                System.out.println("Nuevo estado: "+request.getParameter("estado"));
+                Usuarios user = (Usuarios) 
+                        request.getSession().getAttribute("usuario");
+                try {
+                    new Imagenes_Model().estadoImagen(
+                            request.getParameter("estado"),
+                            Integer.parseInt(request.getParameter("id")),
+                            user.getNombre()
+                    );
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                        response.sendRedirect("Static_pages/errores.jsp");
+                }
+                System.out.println("Estado definido con éxito");
+                response.sendRedirect("Imagenes");
+
             }
         }
     }

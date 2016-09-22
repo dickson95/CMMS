@@ -18,6 +18,10 @@ import org.hibernate.Transaction;
  */
 public class Localizaciones_Model {
 
+    /**
+     * Añade una única nueva localidad a la base de datos
+     * @param obj Objeto de tipo Localizaciones
+     */
     public void addLocalizacion(Localizaciones obj) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -36,7 +40,10 @@ public class Localizaciones_Model {
         }
     }
     
-
+    /**
+     * Elimina una única localidad de la base de datos de forma permanente
+     * @param objid entero (int) para eliminar el registro
+     */
     public void deleteLocalizacion(int objid) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -56,6 +63,11 @@ public class Localizaciones_Model {
         }
     }
 
+    /**
+     * Actualiza una localidad de acuerdo con los datos suministrados, algunos
+     * son obligatorios otros opcionales. El Id es impresindible para la actualización
+     * @param obj Objeto de tipo localizaciones
+     */
     public void updateLocalizacion(Localizaciones obj) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -74,6 +86,10 @@ public class Localizaciones_Model {
         }
     }
 
+    /**
+     * Busca todas las localizaciones activas existentes en la base de datos
+     * @return Una lista de tipo localizaciones con los datos encontrados 
+     */
     public List<Localizaciones> getAllLocalizaciones() {
         List<Localizaciones> obj = new ArrayList<Localizaciones>();
         Transaction trns = null;
@@ -90,6 +106,12 @@ public class Localizaciones_Model {
         }
         return obj;
     }
+    
+    /**
+     * Busca las localizaciones que están inactivas en la base de datos
+     * @return Una lista de tipo localizaciones con los datos encontrados
+     * en la tabla
+     */
     public List<Localizaciones> listNoActive() {
         List<Localizaciones> obj = new ArrayList<Localizaciones>();
         Transaction trns = null;
@@ -107,6 +129,11 @@ public class Localizaciones_Model {
         return obj;
     }
 
+    /**
+     *Obtiene un registro de la tabla localizaciones con todos sus datos
+     * @param objid un entero para encontrar un único registro que corresponda
+     * @return si corresponde, un objeto localizaciones con la información
+     */
     public Localizaciones getLocalizacionById(int objid) {
         Localizaciones obj = null;
         Transaction trns = null;

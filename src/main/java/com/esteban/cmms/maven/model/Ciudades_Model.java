@@ -17,6 +17,11 @@ import org.hibernate.Transaction;
  * @author esteban
  */
 public class Ciudades_Model {
+    
+    /**
+     * @param obj Recibe un objeto de tipo Ciudades para ingresar un nuevo
+     * registro en la base de datos
+     */
 
     public void addCiudad(Ciudades obj) {
         Transaction trns = null;
@@ -36,6 +41,11 @@ public class Ciudades_Model {
         }
     }
     
+    /**
+     * 
+     * @param objid Elimina una ciudad con solo pasarle el Id del registro 
+     * que se desesa eliminar
+     */
 
     public void deleteCiudad(int objid) {
         Transaction trns = null;
@@ -56,6 +66,11 @@ public class Ciudades_Model {
         }
     }
 
+    /**
+     * @param obj Recibe un objeto de tipo Ciudades para  ser actualizado,
+     * todos los datos del pojo deben estar correctamente diligenciados
+     * principalmente el Id para actualizar el registro.
+     */
     public void updateCiudad(Ciudades obj) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -74,15 +89,27 @@ public class Ciudades_Model {
         }
     }
     
-    public List<Ciudades> getAllCiudades() {
-        List<Ciudades> obj = new ArrayList<Ciudades>();
+    /**
+     * @param ciudad Necesita el nombre de la ciudad que desea buscar
+     * @param pais Código del país que corresponde a la ciudad
+     * @return si la ciudad y el código del país corresponden retorna todos los
+     * datos de la ciudad solicitada
+     */
+    
+    public Ciudades getCiudad(String ciudad, String pais) {
+        Ciudades obj = null;
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             trns = session.beginTransaction();
-            obj = session.createQuery("from Ciudades as ci "
-                    + "left join fetch ci.departamentos dep "
-                    + "left join fetch dep.paises").list();
+            Query query = session.createQuery("from Ciudades as ci "
+                    + "left join fetch ci.paises "
+                    + "where ci.ciudad = :ciudad "
+                    + "and ci.paises.codigo = :pais");
+            query.setString("ciudad", ciudad);
+            query.setString("pais", pais);
+            obj = (Ciudades) query.uniqueResult();
+            
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {
@@ -91,7 +118,12 @@ public class Ciudades_Model {
         }
         return obj;
     }
-    
+    /**
+     * @param l es el String que se necesita para buscar cualquier coincidencia
+     * en el listado total de ciudades
+     * @return si el parámetro corresponde, retorna un máximo de 4 ciudades cómo
+     * sugerencia
+     */
     public List<Ciudades> getAllCiudades(String l) {
         List<Ciudades> obj = new ArrayList<Ciudades>();
         Transaction trns = null;
@@ -99,9 +131,8 @@ public class Ciudades_Model {
         try {
             trns = session.beginTransaction();
             obj = session.createQuery("from Ciudades as ci "
-                    + "left join fetch ci.departamentos dep "
-                    + "left join fetch dep.paises "
-                    + "where ci.nombre like '%"+l+"%'").list();
+                    + "left join fetch ci.paises "
+                    + "where ci.ciudad like '%"+l+"%'").setMaxResults(4).list();
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {
@@ -111,6 +142,11 @@ public class Ciudades_Model {
         return obj;
     }
 
+    /**
+     * @param objid Recibe un entero (int) para obtener una ciudad por el id en
+     * la base de datos
+     * @return Retorna un solo registro  con los datos de la ciudad solicitada.
+     */
     public Ciudades getCiudadById(int objid) {
         Ciudades obj = null;
         Transaction trns = null;

@@ -47,73 +47,40 @@ public class Proveedores_Controller extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         String btne = request.getParameter("btn");
         String btn = btne.replaceAll("\\s", "");
-        
+
         if (btn.equalsIgnoreCase("proveedores")) {
             Proveedores_Model model = new Proveedores_Model();
-            Ciudades_Model modelc = new Ciudades_Model();
             HttpSession sesion = request.getSession();
             String valor = request.getParameter("valor");
             List<Proveedores> result = new ArrayList<Proveedores>();
-            List<Ciudades> resultc = new ArrayList<Ciudades>();
             if (valor.equalsIgnoreCase("activo")) {
                 try {
                     result = model.getAllProveedores();
-                    resultc = modelc.getAllCiudades();
                     sesion.setAttribute("proveedores", result);
-                    sesion.setAttribute("ciudades", resultc);
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
                 response.sendRedirect("Proveedores");
             } else if (valor.equalsIgnoreCase("inactivo")) {
                 try {
                     result = model.listNoActive();
                     sesion.setAttribute("proveedores", result);
-                    
+
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
                 response.sendRedirect("Proveedores/archivados.jsp");
             }
-        } else if (btn.equalsIgnoreCase("guardarcambios")) {
-            HttpSession sesion = request.getSession();
-            String Id = request.getParameter("id");
-            Proveedores_Model model = new Proveedores_Model();
-            Ciudades c = new Ciudades(Integer.parseInt(
-                    request.getParameter("ciudad")));
-            System.out.println("Este es el Id: " + Id);
-            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
-            Proveedores pojo = new Proveedores(
-                    Integer.parseInt(Id),
-                    request.getParameter("compania"),
-                    request.getParameter("telefono"),
-                    request.getParameter("direccion"),
-                    request.getParameter("c_postal"),
-                    request.getParameter("email"),
-                    request.getParameter("p_web"),
-                    Long.parseLong(request.getParameter("deuda")),
-                    request.getParameter("descripcion"),
-                    c,
-                    request.getParameter("estado"),
-                    user.getNombre()
-            );
-            
-            try {
-                model.updateProveedor(pojo);
-            } catch (Exception ex) {
-                Logger.getLogger(Proveedores_Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            sesion.removeAttribute("proveedores");
-            sesion.removeAttribute("ciudades");
-            response.sendRedirect("Proveedores");
-            
-        } else if (btn.equalsIgnoreCase("guardar")) {
+        } else if (btn.equalsIgnoreCase("guardar") || btn.equalsIgnoreCase("guardarcambios")) {
             HttpSession sesion = request.getSession();
             sesion.removeAttribute("proveedores");
-            sesion.removeAttribute("ciudades");
-            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
-            Ciudades c = new Ciudades(Integer.parseInt(
-                    request.getParameter("ciudad")));
+            Usuarios user = (Usuarios) sesion.getAttribute("usuario");
+            String ciudadp = request.getParameter("ciudad");
+            String ciudad = ciudadp.replaceAll("\\s", "");
+            String[] p_c = ciudad.split(",");
+            Ciudades c = new Ciudades_Model().getCiudad(p_c[0], p_c[2]);
             Proveedores pojo = new Proveedores(
                     c,
                     request.getParameter("compania"),
@@ -128,20 +95,29 @@ public class Proveedores_Controller extends HttpServlet {
                     user.getNombre()
             );
             Proveedores_Model model = new Proveedores_Model();
-            
+
             try {
-                model.addProveedor(pojo);
+                if (btn.equalsIgnoreCase("guardar")) {
+                    model.addProveedor(pojo);
+                } else if (btn.equalsIgnoreCase("guardarcambios")) {
+                    String Id = request.getParameter("id");
+                    pojo.setId(Integer.parseInt(Id));
+                    model.updateProveedor(pojo);
+                }
+
             } catch (Exception ex) {
-                Logger.getLogger(Proveedores_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
             response.sendRedirect("Proveedores");
         } else if (btn.equalsIgnoreCase("ciudad")) {
-            List<Ciudades> c = new Ciudades_Model().getAllCiudades(request.getParameter("search"));
+            System.out.println("URL: " + request.getRequestURL());
+            List<Ciudades> c = new Ciudades_Model().getAllCiudades(request.getParameter("q"));
             List<String> ciudades = new ArrayList<>();
             for (Ciudades ciudad : c) {
-                ciudades.add(ciudad.getNombre()+", "
-                        + ""+ciudad.getDepartamentos().getNombre()+", "
-                        + ""+ciudad.getDepartamentos().getPaises().getNombre()+"");
+                ciudades.add(ciudad.getCiudad() + ", "
+                        + "" + ciudad.getPaises().getPais() + ", "
+                        + "" + ciudad.getPaises().getCodigo() + "");
             }
             JsonElement json = new Gson().toJsonTree(ciudades);
             PrintWriter out = response.getWriter();
@@ -149,6 +125,12 @@ public class Proveedores_Controller extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             out.print(json);
             out.flush();
+        } else if (btn.equalsIgnoreCase("archivar") || btn.equalsIgnoreCase("activar")) {
+            Integer id = Integer.parseInt(request.getParameter("id"));
+            String estado = request.getParameter("estado");
+            Usuarios user = (Usuarios) request.getSession().getAttribute("usuario");
+            new Proveedores_Model().estadoProveedor(estado, id, user.getNombre());
+            response.sendRedirect("Proveedores");
         }
     }
 

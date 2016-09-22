@@ -67,8 +67,9 @@ public class Maquinas_Controller extends HttpServlet {
 
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
-                response.sendRedirect("Maquinas/index.jsp");
+                response.sendRedirect("Maquinas");
             } else if (valor.equalsIgnoreCase("inactivo")) {
                 try {
                     result = model.listNoActive();
@@ -76,6 +77,7 @@ public class Maquinas_Controller extends HttpServlet {
 
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
                 response.sendRedirect("Maquinas/archivados.jsp");
             }
@@ -100,6 +102,7 @@ public class Maquinas_Controller extends HttpServlet {
                 System.out.println(f_compra + "," + f_marcha + "," + v_garantia + "," + v_vida);
             } catch (ParseException ex) {
                 System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
             Vendedores v = new Vendedores(
                     Integer.parseInt(request.getParameter("vendedor"))
@@ -113,12 +116,21 @@ public class Maquinas_Controller extends HttpServlet {
             Secciones s = new Secciones(
                     Integer.parseInt(request.getParameter("seccion"))
             );
-            Maquinas m = new Maquinas(
-                    Integer.parseInt(request.getParameter("maquina_padre"))
-            );
             Maquinas ma = new Maquinas();
-            ma.setMaquinas(m);
-            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
+            try {
+                Maquinas m = new Maquinas(
+                    Integer.parseInt(request.getParameter("maquina_padre"))
+                );
+                ma.setMaquinas(m);
+            } catch (Exception e) {
+            }
+            Usuarios user = (Usuarios) sesion.getAttribute("usuario");
+            float peso;
+            try {
+                peso = Float.parseFloat(request.getParameter("peso"));
+            } catch (Exception e) {
+                peso = 0;
+            }
             Maquinas pojo = new Maquinas(
                     f_compra, f_marcha,
                     request.getParameter("fabricante"),
@@ -128,7 +140,7 @@ public class Maquinas_Controller extends HttpServlet {
                     request.getParameter("serial"),
                     request.getParameter("marca"),
                     request.getParameter("c_energia"),
-                    Float.parseFloat(request.getParameter("peso")),
+                    peso,
                     Integer.parseInt(request.getParameter("t_garantia")),
                     Integer.parseInt(request.getParameter("t_vida")),
                     v_garantia, v_vida, v, p, tm, s,
@@ -148,7 +160,8 @@ public class Maquinas_Controller extends HttpServlet {
                     model.updateMaquina(pojo);
                 }
             } catch (Exception ex) {
-                Logger.getLogger(Maquinas_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
             response.sendRedirect("Maquinas");
         } else if (btn.equalsIgnoreCase("edit")) {
@@ -184,9 +197,16 @@ public class Maquinas_Controller extends HttpServlet {
                 sesion.setAttribute("maquinas", maquinas);
                 response.sendRedirect("Maquinas/new.jsp");
             } catch (Exception e) {
-                Logger.getLogger(Maquinas_Controller.class.getName()).log(Level.SEVERE, null, e);
+                System.out.println(e);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
 
+        } else if (btn.equalsIgnoreCase("archivar") || btn.equalsIgnoreCase("activar")) {
+            Integer id = Integer.parseInt(request.getParameter("id"));
+            String estado = request.getParameter("estado");
+            Usuarios user = (Usuarios) request.getSession().getAttribute("usuario");
+            new Maquinas_Model().estadoMaquina(estado, id, user.getNombre());
+            response.sendRedirect("Maquinas");
         }
     }
 

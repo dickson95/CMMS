@@ -10,6 +10,7 @@ import com.esteban.cmms.maven.controller.beans.Usuarios;
 import com.esteban.cmms.maven.model.Roles_Model;
 import com.esteban.cmms.maven.model.Usuarios_Model;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,9 +51,11 @@ public class Usuarios_Controller extends HttpServlet {
             Object r;
             try {
                 System.out.println(result.getContrasena());
+                String con = model.getHash(request.getParameter("contrasena"));
+                System.out.println(con);
                 r = model.getUsuarioByUC(
                         request.getParameter("usuario"),
-                        request.getParameter("contrasena")
+                        con
                 );
 
                 if (r == null) {
@@ -62,6 +65,7 @@ public class Usuarios_Controller extends HttpServlet {
                     result = (Usuarios) r;
                     System.out.println(result.getRoles().getRol());
                     sesion.setAttribute("usuario", result);
+                    sesion.setAttribute("roles", new Roles_Model().getAllRoles());
                     response.sendRedirect("Static_pages/home.jsp");
                 }
 
@@ -71,20 +75,30 @@ public class Usuarios_Controller extends HttpServlet {
             }
 
         } else if (btn.equalsIgnoreCase("registrar")) {
-            Roles rol = new Roles(
-                    Integer.parseInt(request.getParameter("rol"))
-            );
-            Usuarios pojo = new Usuarios(
-                    request.getParameter("usuario"),
-                    request.getParameter("contrasena"),
-                    rol
-            );
             try {
-                new Usuarios_Model().addUsuario(pojo);
-            } catch (Exception ex) {
-                Logger.getLogger(Usuarios_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Roles rol = new Roles(
+                        Integer.parseInt(request.getParameter("rol"))
+                );
+                Usuarios_Model model = new Usuarios_Model();
+                String con = model.getHash(request.getParameter("contrasena"));
+                Usuarios pojo = new Usuarios(
+                        request.getParameter("nombre"),
+                        request.getParameter("usuario"),
+                        con,
+                        rol, "Activo"
+                );
+                try {
+                    model.addUsuario(pojo);
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                    response.sendRedirect("Static_pages/errores.jsp");
+                }
+                response.sendRedirect("Usuarios");
+
+            } catch (NoSuchAlgorithmException ex) {
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
-            response.sendRedirect("Usuarios");
 
         } else if (btn.equalsIgnoreCase("salir")) {
             HttpSession sesion = request.getSession();
@@ -99,18 +113,56 @@ public class Usuarios_Controller extends HttpServlet {
             sesion.setAttribute("usuarios", result);
             sesion.setAttribute("roles", roles);
             response.sendRedirect("Usuarios");
-        } else if (btn.equalsIgnoreCase("vetar")) {
-            try {
-                new Usuarios_Model().vetarUsuario(
-                        "Vetado",
-                        Integer.parseInt(request.getParameter("id"))
-                );
-            } catch (Exception e) {
-                System.out.println(e);
-            }finally{
-                response.sendRedirect("Usuarios");
-            }          
+        } else /**
+         * Vetar usuarios
+         */
+        {
+            if (btn.equalsIgnoreCase("vetar")) {
+                try {
+                    new Usuarios_Model().vetarUsuario(
+                            request.getParameter("estado"),
+                            Integer.parseInt(request.getParameter("id"))
+                    );
+                } catch (Exception e) {
+                    System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
+                } finally {
+                    response.sendRedirect("Usuarios");
+                }
 
+            } else if (btn.equalsIgnoreCase("actualizardatos")) {
+                try {
+                    Usuarios user = (Usuarios) request.getSession().getAttribute("usuario");
+                    Usuarios_Model model = new Usuarios_Model();
+                    Roles rol = new Roles();
+                    int id = user.getId();
+                    user.setNombre(request.getParameter("nombre"));
+                    user.setEstado(user.getEstado());
+                    user.setUsuario(user.getUsuario());
+                    if (user.getRoles().getRol() == "administrador"
+                            || (user.getRoles().getRol()).equals("administrador")) {
+                        rol.setId(Integer.parseInt(request.getParameter("rol")));
+                        user.setRoles(rol);
+                    }else{
+                        user.setRoles(user.getRoles());
+                    }
+                    
+                    user.setContrasena(
+                            model.getHash(request.getParameter("contrasena"))
+                    );
+                    model.updateUsuario(user);
+                    request.getSession().invalidate();
+                    List<Roles> roles = new Roles_Model().getAllRoles();
+                    Usuarios user2 = model.getUsuarioById(id);
+                    request.getSession().setAttribute("usuario", user2);
+                    request.getSession().setAttribute("roles", roles);
+                    response.sendRedirect("Usuarios/datos.jsp");
+                } catch (NoSuchAlgorithmException ex) {
+                    System.out.println(ex);
+                    response.sendRedirect("Static_pages/errores.jsp");
+                }
+
+            }
         }
     }
 

@@ -63,15 +63,17 @@ public class Secciones_Controller extends HttpServlet {
 
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
-                response.sendRedirect("Secciones/index.jsp");
-            }else if(valor.equalsIgnoreCase("inactivo")){
+                response.sendRedirect("Secciones");
+            } else if (valor.equalsIgnoreCase("inactivo")) {
                 try {
                     result = model.listNoActive();
                     sesion.setAttribute("secciones", result);
 
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
                 response.sendRedirect("Secciones/archivados.jsp");
             }
@@ -79,41 +81,41 @@ public class Secciones_Controller extends HttpServlet {
             Secciones_Model model = new Secciones_Model();
             Localizaciones l = new Localizaciones(Integer.parseInt(request.getParameter("localizacion")));
             //Datos para el pojo
-            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
+            Usuarios user = (Usuarios) request.getSession().getAttribute("usuario");
             Secciones pojo = new Secciones(l,
-            Integer.parseInt(request.getParameter("seccionId")),
-            request.getParameter("nombreSeccion"),
-            request.getParameter("Estado"),
-            user.getNombre(),
-            request.getParameter("codigo"));
+                    Integer.parseInt(request.getParameter("seccionId")),
+                    request.getParameter("nombreSeccion"),
+                    request.getParameter("Estado"),
+                    user.getNombre(),
+                    request.getParameter("codigo"));
             try {
                 model.updateSeccion(pojo);
             } catch (Exception ex) {
-                RequestDispatcher rd = request.getRequestDispatcher("layouts/navigation.jsp");
-                Logger.getLogger(Secciones_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                rd.include(request, response);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
-            response.sendRedirect("Secciones/index.jsp");
+            response.sendRedirect("Secciones");
 
         } else if (btn.equalsIgnoreCase("guardar")) {
-            
+
             HttpSession sesion = request.getSession();
             sesion.removeAttribute("secciones");
             sesion.removeAttribute("localizaciones");
-            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
+            Usuarios user = (Usuarios) sesion.getAttribute("usuario");
             int id = Integer.parseInt(request.getParameter("localizacion"));
             Localizaciones_Model lmodel = new Localizaciones_Model();
             Localizaciones obj = lmodel.getLocalizacionById(id);
-            Secciones pojo = new Secciones(obj,request.getParameter("nombreSeccion"),
-                    "Activo",user.getNombre(),request.getParameter("codigo"));
-            Secciones_Model model = new Secciones_Model();           
-            
+            Secciones pojo = new Secciones(obj, request.getParameter("nombreSeccion"),
+                    "Activo", user.getNombre(), request.getParameter("codigo"));
+            Secciones_Model model = new Secciones_Model();
+
             try {
                 model.addSeccion(pojo);
             } catch (Exception ex) {
-                Logger.getLogger(Secciones_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
-            response.sendRedirect("Secciones/index.jsp");
+            response.sendRedirect("Secciones");
         }
     }
 

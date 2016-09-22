@@ -55,15 +55,17 @@ public class Localizaciones_Controller extends HttpServlet {
 
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
-                response.sendRedirect("Localizaciones/index.jsp");
-            }else if(valor.equalsIgnoreCase("inactivo")){
+                response.sendRedirect("Localizaciones");
+            } else if (valor.equalsIgnoreCase("inactivo")) {
                 try {
                     result = model.listNoActive();
                     sesion.setAttribute("localizaciones", result);
 
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
                 response.sendRedirect("Localizaciones/archivados.jsp");
             }
@@ -72,39 +74,41 @@ public class Localizaciones_Controller extends HttpServlet {
             Localizaciones_Model model = new Localizaciones_Model();
             String Id = request.getParameter("localizacionId");
             //Datos para el pojo
-            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
+            Usuarios user = (Usuarios) request.getSession().getAttribute("usuario");
             pojo.setId(Integer.parseInt(Id));
             pojo.setNombre(request.getParameter("nombreLocalizacion"));
-            pojo.setCodigo(request.getParameter("codigo")); 
+            pojo.setCodigo(request.getParameter("codigo"));
             pojo.setEstado(request.getParameter("Estado"));
             pojo.setUserAction(user.getNombre());
             try {
                 model.updateLocalizacion(pojo);
             } catch (Exception ex) {
-                Logger.getLogger(Localizaciones_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
-            response.sendRedirect("Localizaciones/index.jsp");
+            response.sendRedirect("Localizaciones");
 
         } else if (btn.equalsIgnoreCase("guardar")) {
             System.out.println("Este es guardar");
             HttpSession sesion = request.getSession();
-            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
+            Usuarios user = (Usuarios) sesion.getAttribute("usuario");
             sesion.removeAttribute("localizaciones");
             String name = request.getParameter("nombreLocalizacion");
-            
+
             Localizaciones pojo = new Localizaciones();
             Localizaciones_Model model = new Localizaciones_Model();
             pojo.setNombre(name);
             pojo.setCodigo(request.getParameter("codigo"));
             pojo.setEstado("Activo");
             pojo.setUserAction(user.getNombre());
-            
+
             try {
                 model.addLocalizacion(pojo);
             } catch (Exception ex) {
-                Logger.getLogger(Localizaciones_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
-            response.sendRedirect("Localizaciones/index.jsp");
+            response.sendRedirect("Localizaciones");
         }
     }
 

@@ -9,51 +9,36 @@ import java.util.Set;
  */
 public class Ciudades implements java.io.Serializable {
 
-    private Integer id;
-    private Departamentos departamentos;
-    private String nombre;
+    private Integer idCiudades;
+    private Paises paises;
+    private String ciudad;
     private Set proveedoreses = new HashSet(0);
 
     public Ciudades() {
     }
 
-    public Ciudades(int id) {
-        this.id = id;
+    public Integer getIdCiudades() {
+        return idCiudades;
     }
 
-    public Ciudades(Departamentos departamentos, String nombre) {
-        this.departamentos = departamentos;
-        this.nombre = nombre;
+    public void setIdCiudades(Integer idCiudad) {
+        this.idCiudades = idCiudad;
     }
 
-    public Ciudades(Departamentos departamentos, String nombre, Set proveedoreses) {
-        this.departamentos = departamentos;
-        this.nombre = nombre;
-        this.proveedoreses = proveedoreses;
+    public Paises getPaises() {
+        return paises;
     }
 
-    public Integer getId() {
-        return this.id;
+    public void setPaises(Paises paises) {
+        this.paises = paises;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public String getCiudad() {
+        return ciudad;
     }
-
-    public Departamentos getDepartamentos() {
-        return this.departamentos;
-    }
-
-    public void setDepartamentos(Departamentos departamentos) {
-        this.departamentos = departamentos;
-    }
-
-    public String getNombre() {
-        return this.nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
     }
 
     public Set getProveedoreses() {

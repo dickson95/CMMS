@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 8/06/2016 05:45:53 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.esteban.cmms.maven.controller.beans.Maquinas" table="Maquinas" catalog="CMMS" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="Id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="maquinas" class="com.esteban.cmms.maven.controller.beans.Maquinas" fetch="select">
+            <column name="Maquina_padre_Id" />
+        </many-to-one>
+        <many-to-one name="proveedores" class="com.esteban.cmms.maven.controller.beans.Proveedores" fetch="select">
+            <column name="Proveedor_Id" />
+        </many-to-one>
+        <many-to-one name="secciones" class="com.esteban.cmms.maven.controller.beans.Secciones" fetch="select">
+            <column name="Secciones_Id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tiposMaquinas" class="com.esteban.cmms.maven.controller.beans.TiposMaquinas" fetch="select">
+            <column name="Tipo_maquina_Id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="vendedores" class="com.esteban.cmms.maven.controller.beans.Vendedores" fetch="select">
+            <column name="Vendedor_Id" />
+        </many-to-one>
+        <property name="fchCompra" type="date">
+            <column name="FchCompra" length="10" not-null="true" />
+        </property>
+        <property name="fchPuestaMarcha" type="date">
+            <column name="Fch_puesta_marcha" length="10" not-null="true" />
+        </property>
+        <property name="fabricante" type="string">
+            <column name="Fabricante" length="50" />
+        </property>
+        <property name="modelo" type="string">
+            <column name="Modelo" length="50" not-null="true" />
+        </property>
+        <property name="codigo" type="string">
+            <column name="Codigo" length="50" not-null="true" />
+        </property>
+        <property name="potencia" type="string">
+            <column name="Potencia" length="50" />
+        </property>
+        <property name="serial" type="string">
+            <column name="Serial" length="50" not-null="true" />
+        </property>
+        <property name="marca" type="string">
+            <column name="Marca" length="50" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="Descripcion" length="65535" />
+        </property>
+        <property name="consumoEnergia" type="string">
+            <column name="ConsumoEnergia" length="50" />
+        </property>
+        <property name="peso" type="java.lang.Float">
+            <column name="Peso" precision="12" scale="0" />
+        </property>
+        <property name="observacion" type="string">
+            <column name="Observacion" length="65535" />
+        </property>
+        <property name="userAction" type="string">
+            <column name="UserAction" length="50" not-null="true" />
+        </property>
+        <property name="estado" type="string">
+            <column name="Estado" length="10" not-null="true" />
+        </property>
+        <property name="fchUltAction" type="timestamp">
+            <column name="FchUltAction" length="19" not-null="true" />
+        </property>
+        <property name="tiempoGarantia" type="int">
+            <column name="Tiempo_garantia" not-null="true" />
+        </property>
+        <property name="tiempoVida" type="int">
+            <column name="Tiempo_vida" not-null="true" />
+        </property>
+        <property name="vencimientoGarantia" type="date">
+            <column name="Vencimiento_garantia" length="10" not-null="true" />
+        </property>
+        <property name="vencimientoVida" type="date">
+            <column name="Vencimiento_vida" length="10" not-null="true" />
+        </property>
+        <set name="maquinases" table="Maquinas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Maquina_padre_Id" />
+            </key>
+            <one-to-many class="com.esteban.cmms.maven.controller.beans.Maquinas" />
+        </set>
+        <set name="documentoses" table="Documentos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Maquina_Id" not-null="true" />
+            </key>
+            <one-to-many class="com.esteban.cmms.maven.controller.beans.Documentos" />
+        </set>
+        <set name="imageneses" table="Imagenes" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Maquina_Id" not-null="true" />
+            </key>
+            <one-to-many class="com.esteban.cmms.maven.controller.beans.Imagenes" />
+        </set>
+    </class>
+</hibernate-mapping>

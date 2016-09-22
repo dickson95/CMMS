@@ -19,13 +19,20 @@ public class Imagenes  implements java.io.Serializable {
 
     public Imagenes() {
     }
+    
+    public Imagenes(String estado, int id, String userAction) {
+        this.id = id;
+        this.estado = estado;
+        this.userAction = userAction;
+        
+    }
 
-    public Imagenes(Maquinas maquinas, String imagen, String estado, Date fchUltAction, String userAction) {
-       this.maquinas = maquinas;
-       this.imagen = imagen;
-       this.estado = estado;
-       this.fchUltAction = fchUltAction;
-       this.userAction = userAction;
+    public Imagenes(String imagen, String estado, String userAction, Maquinas maquinas) {
+        this.imagen = imagen;
+        this.estado = estado;
+        this.userAction = userAction;
+        this.maquinas = maquinas;
+        
     }
    
     public Integer getId() {

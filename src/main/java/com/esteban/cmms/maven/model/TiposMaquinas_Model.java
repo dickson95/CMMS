@@ -18,6 +18,12 @@ import org.hibernate.Transaction;
  */
 public class TiposMaquinas_Model {
 
+    /**
+     * Añade un nuevo tipo de máquina a la tabla
+     *
+     * @param obj un objeto TiposMaquinas correctamente diligenciado, no es
+     * necesario suministrar el id para este caso
+     */
     public void addTipoMaquina(TiposMaquinas tipom) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -36,8 +42,13 @@ public class TiposMaquinas_Model {
             session.close();
         }
     }
-    
 
+    /**
+     * Elimina un tipo de máquina de forma definitiva de la tabla en la base de
+     * datos
+     *
+     * @param objid entero que corresponde al registro que quiere eliminar
+     */
     public void deleteTipoMaquina(int tipomid) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -57,6 +68,12 @@ public class TiposMaquinas_Model {
         }
     }
 
+    /**
+     * Actualiza un tipo de máquina
+     *
+     * @param obj Objeto de tiposMaquinas, es necesario que el id este incluido
+     * en los datos del pojo para una correcta actualización
+     */
     public void updateTipoMaquina(TiposMaquinas tipom) {
         Transaction trns = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -75,6 +92,11 @@ public class TiposMaquinas_Model {
         }
     }
 
+    /**
+     * Obtiene una lista de los tipos de máquinas con estado activo
+     *
+     * @return lista de tiposMaquinas con los datos correspondientes
+     */
     public List<TiposMaquinas> getAllTiposMaquinas() {
         List<TiposMaquinas> tiposm = new ArrayList<TiposMaquinas>();
         Transaction trns = null;
@@ -91,6 +113,12 @@ public class TiposMaquinas_Model {
         }
         return tiposm;
     }
+
+    /**
+     * Obtiene una lista de los tipos de máquinas con estado inactivo
+     *
+     * @return lista de tiposMaquinas con los datos correspondientes
+     */
     public List<TiposMaquinas> listNoActive() {
         List<TiposMaquinas> tiposm = new ArrayList<TiposMaquinas>();
         Transaction trns = null;
@@ -108,6 +136,13 @@ public class TiposMaquinas_Model {
         return tiposm;
     }
 
+    /**
+     * Obtiene un único registro de la base de datos en la tabla tiposMaquinas
+     *
+     * @param objid entero correspondiente al id del registro en la base de
+     * datos
+     * @return un único resultado tiposMaquinas con los datos del registro.
+     */
     public TiposMaquinas getTipoMaquinaById(int tipomid) {
         TiposMaquinas tipom = null;
         Transaction trns = null;

@@ -26,7 +26,7 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "TiposMaquinasC", urlPatterns = {"/TiposMaquinasC"})
 public class TiposMaquinas_Controller extends HttpServlet {
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -56,9 +56,10 @@ public class TiposMaquinas_Controller extends HttpServlet {
 
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
                 response.sendRedirect("TiposMaquinas");
-            }else if(valor.equalsIgnoreCase("inactivo")){
+            } else if (valor.equalsIgnoreCase("inactivo")) {
                 try {
                     List<TiposMaquinas> tip = new ArrayList<TiposMaquinas>();
                     tip = td.listNoActive();
@@ -66,11 +67,12 @@ public class TiposMaquinas_Controller extends HttpServlet {
 
                 } catch (Exception e) {
                     System.out.println(e);
+                    response.sendRedirect("Static_pages/errores.jsp");
                 }
                 response.sendRedirect("TiposMaquinas/archivados.jsp");
             }
         } else if (btn.equalsIgnoreCase("guardarcambios")) {
-            Usuarios user = (Usuarios)request.getSession().getAttribute("usuario");
+            Usuarios user = (Usuarios) request.getSession().getAttribute("usuario");
             TiposMaquinas t = new TiposMaquinas();
             TiposMaquinas_Model td = new TiposMaquinas_Model();
             String Id = request.getParameter("tipoId");
@@ -81,14 +83,15 @@ public class TiposMaquinas_Controller extends HttpServlet {
             try {
                 td.updateTipoMaquina(t);
             } catch (Exception ex) {
-                Logger.getLogger(TiposMaquinas_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
             response.sendRedirect("TiposMaquinas");
 
         } else if (btn.equals("Guardar")) {
             System.out.println("Estoy en guardar");
             HttpSession sesion = request.getSession();
-            Usuarios user = (Usuarios)sesion.getAttribute("usuario");
+            Usuarios user = (Usuarios) sesion.getAttribute("usuario");
             sesion.removeAttribute("tipos");
             String name = request.getParameter("nombreTipo");
             TiposMaquinas tipo = new TiposMaquinas();
@@ -99,7 +102,8 @@ public class TiposMaquinas_Controller extends HttpServlet {
             try {
                 td.addTipoMaquina(tipo);
             } catch (Exception ex) {
-                Logger.getLogger(TiposMaquinas_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
+                response.sendRedirect("Static_pages/errores.jsp");
             }
             response.sendRedirect("TiposMaquinas");
         }

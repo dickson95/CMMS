@@ -24,10 +24,13 @@ public class Usuarios {
     public Usuarios() {
     }
 
-    public Usuarios(String usuario, String contrasena, Roles roles) {
+    public Usuarios(String nombre, String usuario, 
+            String contrasena, Roles roles, String estado) {
+        this.nombre = nombre;
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.roles = roles;
+        this.estado = estado;
     }
     
     public Integer getId() {
